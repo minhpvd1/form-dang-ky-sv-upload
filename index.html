@@ -1208,16 +1208,7 @@
   </div>
 
   <div class="toolbar-actions">
-    <!-- Nút Mở Trang Dữ Liệu Thành Viên & Xuất Excel / JSON / Copy -->
-    <button type="button" class="icon-action-btn" id="openDataViewerBtn" title="Xem danh sách dữ liệu thành viên & Xuất Excel/JSON/Copy" style="position: relative;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-        <line x1="3" y1="9" x2="21" y2="9"/>
-        <line x1="3" y1="15" x2="21" y2="15"/>
-        <line x1="9" y1="3" x2="9" y2="21"/>
-      </svg>
-      <span id="dataCountBadge" style="position: absolute; top: -4px; right: -4px; background: #2563EB; color: white; font-size: 10px; font-weight: 800; padding: 1px 5px; border-radius: 99px; min-width: 16px; text-align: center; border: 1.5px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">0</span>
-    </button>
+    
 
     <!-- Nút Mở Kho Phông Nền Đỉnh Cao & Video -->
     <button type="button" class="icon-action-btn" id="openBgPickerBtn" title="Chọn phông nền sống động / Tải video">
@@ -1495,15 +1486,6 @@
           </svg>
           <span>Nhập cho thành viên khác</span>
         </button>
-        <button type="button" id="viewAllDataFromSuccessBtn" class="btn-reset-glass" style="min-height: 44px; font-size: 13.5px;">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <line x1="3" y1="9" x2="21" y2="9"/>
-            <line x1="3" y1="15" x2="21" y2="15"/>
-            <line x1="9" y1="3" x2="9" y2="21"/>
-          </svg>
-          <span>Xem danh sách tất cả thành viên</span>
-        </button>
       </div>
     </section>
 
@@ -1553,14 +1535,6 @@
           <span id="bulkDeleteCountText">Xóa đã chọn</span>
         </button>
 
-        <a href="/data.html" target="_blank" class="export-grid-btn" style="background: #F1F5F9; color: #334155; border: 1.5px solid #CBD5E1; text-decoration: none;" title="Mở trang này sang tab trình duyệt riêng biệt">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-          <span>Mở Tab riêng</span>
-        </a>
       </div>
     </div>
 
@@ -1594,38 +1568,10 @@
 
       <div style="display: flex; flex-wrap: wrap; gap: 6px;">
         <!-- NÚT SAO CHÉP TOÀN BỘ BẢNG DÁN EXCEL/SHEETS -->
-        <button type="button" id="copyTableToExcelBtn" class="export-grid-btn" style="background: #2563EB; color: #FFFFFF;" title="Sao chép toàn bộ bảng, sang Excel hoặc Google Sheet bấm Ctrl+V là xong!">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-          <span>📋 Copy dán Excel / Sheet</span>
-        </button>
-
         <!-- NÚT XUẤT CSV EXCEL -->
-        <button type="button" id="exportExcelBtn" class="export-grid-btn" style="background: #16A34A; color: #FFFFFF;" title="Tải tệp CSV mở trực tiếp trên Excel">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          <span>Xuất Excel (.csv)</span>
-        </button>
-
         <!-- NÚT XUẤT JSON -->
-        <button type="button" id="exportJsonBtn" class="export-grid-btn" style="background: #0284C7; color: #FFFFFF;" title="Tải tệp dữ liệu JSON">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="16 18 22 12 16 6"/>
-            <polyline points="8 6 2 12 8 18"/>
-          </svg>
-          <span>Xuất JSON</span>
-        </button>
-
         <!-- NÚT SAO CHÉP JSON -->
-        <button type="button" id="copyJsonBtn" class="export-grid-btn" style="background: #FFFFFF; color: #334155; border: 1.5px solid #CBD5E1;" title="Sao chép JSON vào bộ nhớ tạm">
-          <span>Copy JSON</span>
-        </button>
-      </div>
+        </div>
     </div>
 
     <!-- DATA TABLE CONTAINER -->
@@ -2080,7 +2026,6 @@
   const adminBackdrop = document.getElementById('adminBackdrop');
   const closeAdminModalBtn = document.getElementById('closeAdminModalBtn');
   const adminCount = document.getElementById('adminCount');
-  const exportCsvBtn = document.getElementById('exportCsvBtn');
   const clearAllDataBtn = document.getElementById('clearAllDataBtn');
 
   let isSubmitting = false;
@@ -3078,11 +3023,9 @@
      ========================================================================== */
   const formCard = document.getElementById('formCard');
   const dataDashboardPage = document.getElementById('dataDashboardPage');
-  const openDataViewerBtn = document.getElementById('openDataViewerBtn');
   const backToFormBtn = document.getElementById('backToFormBtn');
   const emptyToFormBtn = document.getElementById('emptyToFormBtn');
   const emptyAddBtn = document.getElementById('emptyAddBtn');
-  const viewAllDataFromSuccessBtn = document.getElementById('viewAllDataFromSuccessBtn');
   const dataCountBadge = document.getElementById('dataCountBadge');
   const dashboardTotalCount = document.getElementById('dashboardTotalCount');
   const dashboardLatestName = document.getElementById('dashboardLatestName');
@@ -3095,10 +3038,6 @@
   const addNewMemberBtn = document.getElementById('addNewMemberBtn');
   const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
   const bulkDeleteCountText = document.getElementById('bulkDeleteCountText');
-  const copyTableToExcelBtn = document.getElementById('copyTableToExcelBtn');
-  const exportExcelBtn = document.getElementById('exportExcelBtn');
-  const exportJsonBtn = document.getElementById('exportJsonBtn');
-  const copyJsonBtn = document.getElementById('copyJsonBtn');
   const clearAllTableDataBtn = document.getElementById('clearAllTableDataBtn');
   const toastMsg = document.getElementById('toastMsg');
 
@@ -3732,8 +3671,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  if (openDataViewerBtn) openDataViewerBtn.addEventListener('click', showDataPage);
-  if (viewAllDataFromSuccessBtn) viewAllDataFromSuccessBtn.addEventListener('click', showDataPage);
   if (backToFormBtn) backToFormBtn.addEventListener('click', showFormPage);
   if (emptyToFormBtn) emptyToFormBtn.addEventListener('click', showFormPage);
 
@@ -3753,98 +3690,9 @@
   }
 
   // 1. SAO CHÉP TOÀN BỘ BẢNG DÁN TRỰC TIẾP VÀO EXCEL HOẶC GOOGLE SHEETS (TAB-DELIMITED)
-  copyTableToExcelBtn.addEventListener('click', async () => {
-    const records = getSavedRecords();
-    if (!records.length) {
-      alert("Chưa có dữ liệu thành viên nào để sao chép.");
-      return;
-    }
-
-    let tsv = "STT\tMSSV\tHọ và tên\tMã thẻ thành viên\tThời gian ghi nhận\tĐơn vị\n";
-    records.forEach((r, i) => {
-      tsv += `${i + 1}\t${r.mssv || ''}\t${r.fullName || ''}\t${r.code || ''}\t${r.displayTime || r.time || ''}\t${r.unit || DON_VI}\n`;
-    });
-
-    try {
-      await navigator.clipboard.writeText(tsv);
-      showToast("📋 Đã copy toàn bộ bảng! Hãy mở Excel/Google Sheet và bấm Ctrl + V (Dán) nhé!");
-    } catch (err) {
-      const ta = document.createElement('textarea');
-      ta.value = tsv;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      showToast("📋 Đã copy toàn bộ bảng! Hãy sang Excel bấm Ctrl + V để dán!");
-    }
-  });
-
   // 2. XUẤT FILE EXCEL (.CSV) UTF-8 CÓ BOM KHÔNG LỖI TIẾNG VIỆT
-  exportExcelBtn.addEventListener('click', () => {
-    const records = getSavedRecords();
-    if (!records.length) {
-      alert("Chưa có thành viên nào để xuất file Excel.");
-      return;
-    }
-
-    let csv = "\uFEFF"; 
-    csv += "STT,Mã số sinh viên (MSSV),Họ và tên,Mã thẻ thành viên,Thời gian ghi nhận,Đơn vị\n";
-
-    records.forEach((r, i) => {
-      const safeName = `"${(r.fullName || '').replace(/"/g, '""')}"`;
-      const safeUnit = `"${(r.unit || DON_VI).replace(/"/g, '""')}"`;
-      csv += `${i + 1},${r.mssv || ''},${safeName},${r.code || ''},"${r.displayTime || r.time || ''}",${safeUnit}\n`;
-    });
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `danh_sach_thanh_vien_${Date.now()}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    showToast("✓ Đã tải file Excel (.csv) thành công!");
-  });
-
   // 3. XUẤT FILE JSON
-  exportJsonBtn.addEventListener('click', () => {
-    const records = getSavedRecords();
-    if (!records.length) {
-      alert("Chưa có dữ liệu để xuất file JSON.");
-      return;
-    }
-
-    const jsonStr = JSON.stringify(records, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `danh_sach_thanh_vien_${Date.now()}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    showToast("✓ Đã tải tệp JSON thành công!");
-  });
-
   // 4. SAO CHÉP CHUỖI JSON
-  copyJsonBtn.addEventListener('click', async () => {
-    const records = getSavedRecords();
-    if (!records.length) {
-      alert("Chưa có dữ liệu để sao chép JSON.");
-      return;
-    }
-    const jsonStr = JSON.stringify(records, null, 2);
-    try {
-      await navigator.clipboard.writeText(jsonStr);
-      showToast("✓ Đã sao chép dữ liệu JSON vào bộ nhớ tạm!");
-    } catch (e) {
-      alert("Không thể tự động sao chép. Vui lòng thử nút Xuất JSON.");
-    }
-  });
-
   // Kiểm tra URL hash ban đầu (sau khi syncFromCloud đã cập nhật giao diện)
   if (window.location.hash === '#data') {
     showDataPage();
@@ -3882,7 +3730,7 @@
 
   // Xuất file CSV từ Admin Panel
   exportCsvBtn.addEventListener('click', () => {
-    exportExcelBtn.click();
+    // export removed
   });
 
   clearAllDataBtn.addEventListener('click', () => {

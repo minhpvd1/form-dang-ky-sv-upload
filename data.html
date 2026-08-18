@@ -575,19 +575,10 @@
     />
 
     <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-      <button type="button" id="copyExcelBtn" class="btn-action btn-blue" title="Sao chép toàn bộ bảng, sang Excel bấm Ctrl + V">
-        📋 Copy dán Excel / Sheet
-      </button>
       <button type="button" id="exportCsvBtn" class="btn-action btn-green" title="Tải file Excel .csv chuẩn tiếng Việt">
         Xuất Excel (.csv)
       </button>
-      <button type="button" id="exportJsonBtn" class="btn-action btn-sky" title="Tải file JSON">
-        Xuất JSON
-      </button>
-      <button type="button" id="copyJsonBtn" class="btn-action btn-outline" title="Copy chuỗi JSON">
-        Copy JSON
-      </button>
-    </div>
+      </div>
   </div>
 
   <!-- DATA TABLE -->
@@ -1313,29 +1304,6 @@
   });
 
   // COPY TAB-DELIMITED FOR EXCEL / SHEETS
-  document.getElementById('copyExcelBtn').addEventListener('click', async () => {
-    const records = getRecords();
-    if (!records.length) return alert("Chưa có dữ liệu thành viên để sao chép.");
-
-    let tsv = "STT\tMSSV\tHọ và tên\tMã thẻ thành viên\tThời gian ghi nhận\tĐơn vị\n";
-    records.forEach((r, i) => {
-      tsv += `${i + 1}\t${r.mssv || ''}\t${r.fullName || ''}\t${r.code || ''}\t${r.displayTime || r.time || ''}\t${r.unit || DON_VI}\n`;
-    });
-
-    try {
-      await navigator.clipboard.writeText(tsv);
-      showToast("📋 Đã copy bảng! Hãy mở Excel và bấm Ctrl + V để dán!");
-    } catch (e) {
-      const ta = document.createElement('textarea');
-      ta.value = tsv;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      showToast("📋 Đã copy bảng! Hãy sang Excel bấm Ctrl + V để dán!");
-    }
-  });
-
   // EXPORT CSV UTF-8 WITH BOM
   document.getElementById('exportCsvBtn').addEventListener('click', () => {
     const records = getRecords();
@@ -1361,35 +1329,9 @@
   });
 
   // EXPORT JSON
-  document.getElementById('exportJsonBtn').addEventListener('click', () => {
-    const records = getRecords();
-    if (!records.length) return alert("Chưa có dữ liệu để xuất file JSON.");
-
-    const jsonStr = JSON.stringify(records, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `danh_sach_thanh_vien_${Date.now()}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    showToast("✓ Đã tải tệp JSON!");
-  });
+  );
 
   // COPY JSON
-  document.getElementById('copyJsonBtn').addEventListener('click', async () => {
-    const records = getRecords();
-    if (!records.length) return alert("Chưa có dữ liệu để sao chép JSON.");
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(records, null, 2));
-      showToast("✓ Đã sao chép chuỗi JSON!");
-    } catch (e) {
-      alert("Không thể tự động sao chép.");
-    }
-  });
-
   // Initial render
   render();
 </script>

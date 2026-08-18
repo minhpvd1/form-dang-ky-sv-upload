@@ -853,8 +853,20 @@
         if (data.records && data.records.length > 0) {
           // Gộp: giữ records từ cloud, không ghi đè nếu local có thêm
           const local = getRecords();
-          const cloudMssvs = new Set(data.records.map(r => r.mssv));
-          const merged = [...data.records];
+          const cloudMssvs = new Set();
+          // Chuẩn hoá field names từ Supabase (snake_case → camelCase)
+          const normalized = data.records.map(r => ({
+            id: r.id?.toString() || Date.now().toString(),
+            mssv: r.mssv || '',
+            fullName: r.full_name || r.fullName || '',
+            code: r.code || '',
+            displayTime: r.display_time || r.displayTime || '',
+            timestamp: r.timestamp || '',
+            event: r.event || 'Nhập thông tin thành viên',
+            unit: r.unit || 'Trường Đại học Tây Nguyên',
+          }));
+          normalized.forEach(r => cloudMssvs.add(r.mssv));
+          const merged = [...normalized];
           for (const r of local) {
             if (!cloudMssvs.has(r.mssv)) merged.push(r);
           }

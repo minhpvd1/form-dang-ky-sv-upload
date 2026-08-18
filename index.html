@@ -3144,6 +3144,42 @@
     }
   }
 
+  // Đồng bộ dữ liệu từ Supabase (cloud) về localStorage khi mở form
+  async function syncFromCloud() {
+    try {
+      const resp = await fetch('/api/records');
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.records && data.records.length > 0) {
+          const local = getSavedRecords();
+          const cloudMssvs = new Set();
+          // Chuẩn hoá tên field từ Supabase (snake_case → camelCase)
+          const normalized = data.records.map(r => ({
+            id: r.id?.toString() || Date.now().toString(),
+            mssv: r.mssv || '',
+            fullName: r.full_name || r.fullName || '',
+            code: r.code || '',
+            displayTime: r.display_time || r.displayTime || '',
+            timestamp: r.timestamp || '',
+            event: r.event || 'Nhập thông tin thành viên',
+            unit: r.unit || 'Trường Đại học Tây Nguyên',
+          }));
+          normalized.forEach(r => cloudMssvs.add(r.mssv));
+          const merged = [...normalized];
+          for (const r of local) {
+            if (!cloudMssvs.has(r.mssv)) merged.push(r);
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        }
+      }
+    } catch (_) {}
+    // Cập nhật giao diện sau khi sync
+    updateDataCounters();
+    renderDataTable();
+  }
+  // Gọi sync ngay khi load trang
+  syncFromCloud();
+
   function saveRecords(records) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
   }

@@ -1,6 +1,9 @@
-import { list } from '@vercel/blob';
+import { createClient } from '@supabase/supabase-js';
 
-const BLOB_KEY = 'records.json';
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,22 +14,17 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Chỉ chấp nhận GET' });
 
   try {
-    const blob = await list({ prefix: BLOB_KEY, limit: 1 });
-    if (blob.blobs.length === 0) {
-      return res.status(200).json({ records: [], total: 0 });
-    }
+    const { data: records, error } = await supabase
+      .from('members')
+      .select('*')
+      .order('timestamp', { ascending: false })
+      .limit(1000);
 
-    const resp = await fetch(blob.blobs[0].url, {
-      headers: { Authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN }
-    });
-    if (!resp.ok) {
-      return res.status(200).json({ records: [], total: 0 });
-    }
+    if (error) throw error;
 
-    const records = await resp.json();
-    return res.status(200).json({ records: Array.isArray(records) ? records : [], total: Array.isArray(records) ? records.length : 0 });
+    return res.status(200).json({ records: records || [], total: records ? records.length : 0 });
   } catch (err) {
     console.error('Records error:', err);
-    return res.status(200).json({ records: [], total: 0, error: err.message });
+    return res.status(500).json({ error: 'Lỗi server: ' + err.message });
   }
 }

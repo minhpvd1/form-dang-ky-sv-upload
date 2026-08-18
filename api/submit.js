@@ -1,6 +1,9 @@
-import { put, list } from '@vercel/blob';
+import { createClient } from '@supabase/supabase-js';
 
-const BLOB_KEY = 'records.json';
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,37 +19,36 @@ export default async function handler(req, res) {
 
     const now = new Date();
     const record = {
-      id: Date.now().toString(),
+      id: Date.now(),
       mssv: mssv.trim(),
-      fullName: fullName.trim(),
+      full_name: fullName.trim(),
       code: code || '',
-      timestamp: now.toISOString(),
-      displayTime: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} • ${now.toLocaleDateString('vi-VN')}`,
       event: event || 'Nhập thông tin thành viên',
       unit: unit || 'Trường Đại học Tây Nguyên',
+      display_time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} • ${now.toLocaleDateString('vi-VN')}`,
+      timestamp: now.toISOString(),
     };
 
-    let records = [];
-    try {
-      const blob = await list({ prefix: BLOB_KEY, limit: 1 });
-      if (blob.blobs.length > 0) {
-        const resp = await fetch(blob.blobs[0].url, {
-          headers: { Authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN }
-        });
-        if (resp.ok) records = await resp.json();
-      }
-    } catch (_) {}
+    // Kiểm tra trùng MSSV
+    const { data: existing } = await supabase
+      .from('members')
+      .select('mssv')
+      .eq('mssv', record.mssv)
+      .limit(1);
 
-    if (!Array.isArray(records)) records = [];
-    records.unshift(record);
+    if (existing && existing.length > 0) {
+      return res.status(200).json({ duplicate: true, message: 'MSSV này đã đăng ký rồi' });
+    }
 
-    await put(BLOB_KEY, JSON.stringify(records), {
-      contentType: 'application/json',
-      access: 'private',
-      allowOverwrite: true,
-    });
+    const { data, error } = await supabase
+      .from('members')
+      .insert(record)
+      .select()
+      .single();
 
-    return res.status(200).json({ success: true, record, total: records.length });
+    if (error) throw error;
+
+    return res.status(200).json({ success: true, record: data });
   } catch (err) {
     console.error('Submit error:', err);
     return res.status(500).json({ error: 'Lỗi server: ' + err.message });

@@ -64,6 +64,30 @@
       background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.6) 100%);
     }
 
+    #bgVideo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 0;
+    }
+
+    #bgVideo.active {
+      opacity: 0.85;
+    }
+
+    .fx-canvas-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
     /* TOP NAVBAR */
     .data-nav {
       position: relative;
@@ -472,6 +496,56 @@
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    .scene-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1.5px solid #CBD5E1;
+      background: #FFFFFF;
+      color: #334155;
+      transition: all 0.2s ease;
+    }
+    .scene-btn:hover {
+      background: #1D4ED8;
+      color: #FFFFFF;
+      border-color: #1D4ED8;
+      transform: translateY(-1px);
+    }
+    .scene-btn.active {
+      background: #2563EB;
+      color: #FFFFFF;
+      border-color: #2563EB;
+    }
+    .fx-chip-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1.5px solid #CBD5E1;
+      background: #FFFFFF;
+      color: #475569;
+      transition: all 0.2s ease;
+    }
+    .fx-chip-btn.active {
+      background: #334155;
+      color: #FFFFFF;
+      border-color: #334155;
+    }
+    .fx-chip-btn:hover {
+      transform: translateY(-1px);
+    }
+
     .toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
@@ -487,6 +561,8 @@
 
 <div class="bg-stage">
   <div class="bg-overlay"></div>
+  <video id="bgVideo" autoplay loop muted playsinline preload="auto"></video>
+  <canvas id="canvasLayer" class="fx-canvas-layer"></canvas>
 </div>
 
 <nav class="data-nav">
@@ -580,6 +656,14 @@
       </button>
       <button type="button" id="exportJsonBtn" class="btn-action btn-sky" title="Tải file JSON">
         Xuất JSON
+      </button>
+      <button type="button" id="openBgPickerBtn" class="btn-action btn-outline" title="Kho Phông Nền & Hiệu Ứng">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span>Phông nền</span>
       </button>
     </div>
   </div>
@@ -752,6 +836,50 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Kho Phông Nền Đỉnh Cao & Hiệu Ứng -->
+<div id="bgModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width: 520px;">
+    <div class="modal-head">
+      <h3 style="font-size: 16px; margin: 0; font-weight: 800; color: #0F172A;">Kho Phông Nền Đỉnh Cao & Hiệu Ứng</h3>
+      <button type="button" class="modal-close" id="closeBgModalBtn">&times;</button>
+    </div>
+    <div class="modal-body" style="gap: 14px;">
+      <p style="font-size: 12.5px; color: #64748B; margin: 0;">Chọn phông nền hoặc tải video cá nhân để làm mới không gian làm việc.</p>
+      
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <button type="button" class="scene-btn" data-scene="anime-train">🚂 Tàu ven biển</button>
+        <button type="button" class="scene-btn" data-scene="highlands-waterfall">🏔️ Thác Tây Nguyên</button>
+        <button type="button" class="scene-btn" data-scene="sunset">🌅 Hoàng hôn</button>
+        <button type="button" class="scene-btn" data-scene="aurora-stars">🌌 Cực quang</button>
+        <button type="button" class="scene-btn" data-scene="sakura-river">🌸 Sông hoa anh đào</button>
+        <button type="button" class="scene-btn" data-scene="summer-blue">🏖️ Biển xanh mùa hè</button>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; padding-top: 6px; border-top: 1px solid #E2E8F0;">
+        <span style="font-size: 12px; font-weight: 700; color: #475569; width: 100%;">Hiệu ứng hạt:</span>
+        <button type="button" class="fx-chip-btn active" id="togglePetalsFx">🌸 Cánh hoa rơi</button>
+        <button type="button" class="fx-chip-btn active" id="toggleFirefliesFx">✨ Đốm sáng thần tiên</button>
+        <button type="button" class="fx-chip-btn active" id="toggleGodraysFx">☀️ Tia nắng mặt trời</button>
+        <button type="button" class="fx-chip-btn active" id="toggleMeteorsFx">🌠 Sao băng</button>
+      </div>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 6px; border-top: 1px solid #E2E8F0;">
+        <span style="font-size: 12px; font-weight: 700; color: #475569; width: 100%;">Video cá nhân:</span>
+        <label for="videoFileInput" class="btn-action btn-outline" style="cursor: pointer;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Tải video lên</span>
+        </label>
+        <input type="file" id="videoFileInput" accept="video/*" style="display: none;">
+        <button type="button" class="btn-action btn-outline" id="clearVideoBtn">Xoá video</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1351,6 +1479,210 @@
 
   // Initial render
   render();
+
+  /* ==========================================================================
+     KHO PHÔNG NỀN ĐỈNH CAO & HIỆU ỨNG
+     ========================================================================== */
+  const bgVideo = document.getElementById('bgVideo');
+  const openBgPickerBtn = document.getElementById('openBgPickerBtn');
+  const closeBgModalBtn = document.getElementById('closeBgModalBtn');
+  const bgModalBackdrop = document.getElementById('bgModalBackdrop');
+  const videoFileInput = document.getElementById('videoFileInput');
+  const clearVideoBtn = document.getElementById('clearVideoBtn');
+  const togglePetalsFx = document.getElementById('togglePetalsFx');
+  const toggleFirefliesFx = document.getElementById('toggleFirefliesFx');
+  const toggleGodraysFx = document.getElementById('toggleGodraysFx');
+  const toggleMeteorsFx = document.getElementById('toggleMeteorsFx');
+
+  // Canvas
+  const canvasLayer = document.getElementById('canvasLayer');
+  const ctx = canvasLayer ? canvasLayer.getContext('2d') : null;
+  let animFrame = null;
+  let fxEnabled = { petals: true, fireflies: true, godrays: true, meteors: true };
+  let currentTheme = 'aurora-stars';
+  let waveTime = 0;
+  let w = 0, h = 0;
+
+  function resizeCanvas() {
+    if (!canvasLayer) return;
+    w = canvasLayer.width = window.innerWidth;
+    h = canvasLayer.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  if (canvasLayer) resizeCanvas();
+
+  // Scene backgrounds
+  const SCENES = {
+    'anime-train': 'https://images.unsplash.com/photo-1511629093381-3e10d2b6e2b0?w=1600&q=80',
+    'highlands-waterfall': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80',
+    'sunset': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80',
+    'aurora-stars': 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1600&q=80',
+    'sakura-river': 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1600&q=80',
+    'summer-blue': 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1600&q=80',
+  };
+
+  function setScene(sceneKey) {
+    currentTheme = sceneKey;
+    const url = SCENES[sceneKey];
+    if (!url) return;
+    bgVideo.style.background = `url(${url}) center/cover no-repeat`;
+    bgVideo.classList.remove('active');
+    bgVideo.src = '';
+    setTimeout(() => bgVideo.classList.add('active'), 100);
+    // Update active class on buttons
+    document.querySelectorAll('.scene-btn').forEach(b => b.classList.toggle('active', b.dataset.scene === sceneKey));
+  }
+
+  document.querySelectorAll('.scene-btn').forEach(btn => {
+    btn.addEventListener('click', () => setScene(btn.dataset.scene));
+  });
+
+  // Init default scene
+  setTimeout(() => setScene('aurora-stars'), 200);
+
+  if (openBgPickerBtn) {
+    openBgPickerBtn.addEventListener('click', () => {
+      bgModalBackdrop.classList.add('visible');
+    });
+  }
+  if (closeBgModalBtn) {
+    closeBgModalBtn.addEventListener('click', () => {
+      bgModalBackdrop.classList.remove('visible');
+    });
+  }
+  if (bgModalBackdrop) {
+    bgModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === bgModalBackdrop) bgModalBackdrop.classList.remove('visible');
+    });
+  }
+
+  if (clearVideoBtn) {
+    clearVideoBtn.addEventListener('click', () => {
+      bgVideo.pause();
+      bgVideo.classList.remove('active');
+      bgVideo.src = '';
+      setScene(currentTheme);
+    });
+  }
+
+  if (videoFileInput) {
+    videoFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const fileUrl = URL.createObjectURL(file);
+        bgVideo.src = fileUrl;
+        bgVideo.play().then(() => {
+          bgVideo.classList.add('active');
+          bgModalBackdrop.classList.remove('visible');
+        }).catch(err => {
+          console.log("Video error:", err);
+        });
+      }
+    });
+  }
+
+  function setupFxToggle(btn, fxKey) {
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      fxEnabled[fxKey] = !fxEnabled[fxKey];
+      btn.classList.toggle('active', fxEnabled[fxKey]);
+    });
+  }
+  setupFxToggle(togglePetalsFx, 'petals');
+  setupFxToggle(toggleFirefliesFx, 'fireflies');
+  setupFxToggle(toggleGodraysFx, 'godrays');
+  setupFxToggle(toggleMeteorsFx, 'meteors');
+
+  // Canvas particle system
+  function drawParticles(time) {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, w, h);
+
+    // Petals
+    if (fxEnabled.petals) {
+      const petalCount = 28;
+      for (let i = 0; i < petalCount; i++) {
+        const x = ((i * 137.5 + time * 0.03) % w);
+        const y = ((i * 97.3 + time * 0.05 + Math.sin(i + time * 0.015) * 30) % (h + 40)) - 20;
+        const s = 5 + Math.sin(i * 1.7) * 2.5;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(Math.sin(i + time * 0.02) * 0.3);
+        ctx.fillStyle = i % 3 === 0 ? 'rgba(255, 182, 193, 0.5)' : i % 3 === 1 ? 'rgba(255, 105, 180, 0.4)' : 'rgba(255, 218, 185, 0.45)';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, s, s * 0.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Fireflies
+    if (fxEnabled.fireflies) {
+      const fireflyCount = 22;
+      for (let i = 0; i < fireflyCount; i++) {
+        const x = ((i * 211.7 + time * 0.02 + Math.sin(i * 0.5 + time * 0.01) * 40) % w);
+        const y = ((i * 143.9 + time * 0.015 + Math.cos(i * 0.3 + time * 0.008) * 30) % h);
+        const pulse = 0.3 + Math.sin(time * 0.003 + i * 2.1) * 0.3;
+        ctx.beginPath();
+        ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 235, 150, ${pulse})`;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 235, 150, ${pulse * 0.15})`;
+        ctx.fill();
+      }
+    }
+
+    // God rays
+    if (fxEnabled.godrays) {
+      const rayCount = 5;
+      for (let r = 0; r < rayCount; r++) {
+        const rx = w * (0.1 + r * 0.2);
+        const grad = ctx.createRadialGradient(rx, 0, 0, rx, 0, w * 0.5);
+        const alpha = 0.03 + Math.sin(time * 0.001 + r * 1.5) * 0.02;
+        grad.addColorStop(0, `rgba(255, 220, 150, ${alpha})`);
+        grad.addColorStop(1, 'rgba(255, 220, 150, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+      }
+    }
+
+    // Meteors
+    if (fxEnabled.meteors) {
+      const meteorCount = 3;
+      for (let m = 0; m < meteorCount; m++) {
+        const progress = ((time * 0.002 + m * 0.33) % 1);
+        const mx = w * progress * 1.2;
+        const my = h * progress * 0.6 + 10;
+        const tailLen = 60;
+        const grad = ctx.createLinearGradient(mx, my, mx - tailLen, my + tailLen * 0.5);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+        grad.addColorStop(0.3, 'rgba(200, 220, 255, 0.3)');
+        grad.addColorStop(1, 'rgba(200, 220, 255, 0)');
+        ctx.beginPath();
+        ctx.moveTo(mx, my);
+        ctx.lineTo(mx - tailLen, my + tailLen * 0.5);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    animFrame = requestAnimationFrame(drawParticles);
+  }
+  animFrame = requestAnimationFrame(drawParticles);
+
+  // Stop animation when page is hidden
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && animFrame) {
+      cancelAnimationFrame(animFrame);
+      animFrame = null;
+    } else if (!document.hidden && !animFrame) {
+      animFrame = requestAnimationFrame(drawParticles);
+    }
+  });
+
 </script>
 </body>
 </html>

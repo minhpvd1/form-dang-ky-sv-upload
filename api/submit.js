@@ -1,10 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -14,6 +9,19 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Chỉ chấp nhận POST' });
 
   try {
+    const url = process.env.SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_KEY;
+
+    // Debug
+    console.log('URL:', url ? url.substring(0, 30) + '...' : 'MISSING');
+    console.log('KEY:', key ? key.substring(0, 20) + '...' : 'MISSING');
+
+    if (!url || !key) {
+      return res.status(500).json({ error: 'Thiếu cấu hình Supabase' });
+    }
+
+    const supabase = createClient(url, key);
+
     const { mssv, fullName, code, event, unit } = req.body || {};
     if (!mssv || !fullName) return res.status(400).json({ error: 'Thiếu MSSV hoặc Họ tên' });
 
@@ -29,7 +37,6 @@ export default async function handler(req, res) {
       timestamp: now.toISOString(),
     };
 
-    // Kiểm tra trùng MSSV
     const { data: existing } = await supabase
       .from('members')
       .select('mssv')

@@ -1,0 +1,3828 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Nhập thông tin thành viên - Trường Đại học Tây Nguyên</title>
+  <meta name="description" content="Biểu mẫu nhập thông tin thành viên với hệ thống phông nền sống động đỉnh cao, âm thanh thư giãn và thẻ kính mờ cao cấp.">
+  <meta name="theme-color" content="#1E40AF">
+
+  <style>
+    /* ==========================================================================
+       MASTERCLASS CINEMATIC THEME & LIQUID FROSTED GLASS
+       ========================================================================== */
+    :root {
+      --primary: #2563EB;
+      --primary-gradient: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 50%, #06B6D4 100%);
+      --accent: #38BDF8;
+      
+      --glass-bg: rgba(255, 255, 255, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.7);
+      --glass-blur: blur(24px) saturate(190%);
+      
+      --text: #0F172A;
+      --text-muted: #475569;
+      --text-light: #F8FAFC;
+      
+      --error: #E11D48;
+      --error-bg: rgba(255, 241, 242, 0.92);
+      --success: #16A34A;
+      
+      --radius-2xl: 26px;
+      --radius-xl: 18px;
+      --radius-md: 12px;
+      --radius-full: 9999px;
+      
+      --shadow-glass: 0 24px 48px -12px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.5);
+      --shadow-btn: 0 8px 24px -4px rgba(37, 99, 235, 0.5);
+      
+      --transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #050b14;
+    }
+
+    /* ==========================================================================
+       LIVING CANVAS & MULTI-LAYER CINEMATIC ENGINE
+       ========================================================================== */
+    .bg-stage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    #bgVideo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 1;
+    }
+
+    #bgVideo.active {
+      opacity: 1;
+    }
+
+    #sceneryCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    #fxCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+    }
+
+    .bg-lighting-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.08) 0%, rgba(10, 20, 40, 0.45) 100%);
+      z-index: 4;
+      pointer-events: none;
+      transition: background 0.8s ease;
+    }
+
+    /* ==========================================================================
+       TOP FLOATING GLASS TOOLBAR
+       ========================================================================== */
+    .top-toolbar {
+      position: fixed;
+      top: 14px;
+      left: 0;
+      right: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 60;
+      pointer-events: auto;
+    }
+
+    .toolbar-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #FFFFFF;
+      padding: 7px 14px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .toolbar-chip:hover {
+      background: rgba(15, 23, 42, 0.85);
+      transform: translateY(-1.5px);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .toolbar-chip svg {
+      width: 16px;
+      height: 16px;
+      color: #60A5FA;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-action-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+    }
+
+    .icon-action-btn:hover {
+      background: rgba(15, 23, 42, 0.9);
+      transform: scale(1.08);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .icon-action-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .icon-action-btn.active {
+      background: var(--primary);
+      border-color: #93C5FD;
+      box-shadow: 0 0 14px rgba(37, 99, 235, 0.6);
+    }
+
+    /* ==========================================================================
+       MAIN APP CONTAINER & FROSTED GLASS CARD
+       ========================================================================== */
+    .app-viewport {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 68px 16px 24px;
+      z-index: 10;
+    }
+
+    .glass-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1.5px solid var(--glass-border);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-glass);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      animation: cardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ==========================================================================
+       CARD HEADER WITH SEASIDE VIBE
+       ========================================================================== */
+    .card-header {
+      padding: 22px 22px 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.15) 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+      position: relative;
+    }
+
+    .header-badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .university-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(37, 99, 235, 0.28);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .university-pill:hover {
+      background: rgba(37, 99, 235, 0.22);
+    }
+
+    .university-pill svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .live-pulse-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #059669;
+      background: rgba(16, 185, 129, 0.15);
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .pulse-dot {
+      width: 6.5px;
+      height: 6.5px;
+      background-color: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10B981;
+      animation: pulseAnim 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.75); }
+    }
+
+    .event-main-title {
+      font-size: 23px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .event-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .event-desc svg {
+      width: 14px;
+      height: 14px;
+      color: #0284C7;
+    }
+
+    /* ==========================================================================
+       FORM INPUTS & LABELS
+       ========================================================================== */
+    .card-body {
+      padding: 22px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .custom-label {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .star-req {
+      color: var(--error);
+      font-weight: 800;
+    }
+
+    .counter-pill {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .input-shell {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon-left {
+      position: absolute;
+      left: 14px;
+      width: 20px;
+      height: 20px;
+      color: #64748B;
+      pointer-events: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .glass-input {
+      width: 100%;
+      min-height: 52px;
+      padding: 12px 42px 12px 46px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.88);
+      border: 1.5px solid rgba(148, 163, 184, 0.45);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: var(--transition);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .glass-input::placeholder {
+      font-weight: 400;
+      color: #94A3B8;
+    }
+
+    .glass-input:focus {
+      background: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.25);
+    }
+
+    .glass-input:focus ~ .input-icon-left {
+      color: var(--primary);
+    }
+
+    .glass-input[aria-invalid="true"] {
+      border-color: var(--error);
+      background-color: var(--error-bg);
+    }
+
+    .glass-input[aria-invalid="true"]:focus {
+      box-shadow: 0 0 0 3.5px rgba(225, 29, 72, 0.25);
+    }
+
+    .btn-clear {
+      position: absolute;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: none;
+      color: #94A3B8;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .btn-clear:hover {
+      color: var(--text);
+      background-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-clear.active {
+      display: flex;
+    }
+
+    .error-tag {
+      display: none;
+      align-items: flex-start;
+      gap: 5px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--error);
+      margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    .error-tag.visible {
+      display: flex;
+    }
+
+    .error-tag svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ==========================================================================
+       BANNER ALERTS
+       ========================================================================== */
+    .banner-box {
+      display: none;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      background: var(--error-bg);
+      border: 1px solid rgba(225, 29, 72, 0.3);
+      color: var(--error);
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .banner-box.visible {
+      display: flex;
+    }
+
+    .banner-box svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       CARD FOOTER & STICKY SUBMIT
+       ========================================================================== */
+    .card-footer {
+      padding: 16px 22px 20px;
+      background: rgba(255, 255, 255, 0.55);
+      border-top: 1px solid rgba(255, 255, 255, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-glow-submit {
+      width: 100%;
+      min-height: 52px;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      color: #FFFFFF;
+      background: var(--primary-gradient);
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow-btn);
+      transition: var(--transition);
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-glow-submit::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent 40%, rgba(255, 255, 255, 0.28) 50%, transparent 60%);
+      transform: rotate(25deg);
+      animation: shimmerBtn 4s infinite linear;
+    }
+
+    @keyframes shimmerBtn {
+      0% { transform: translateX(-100%) rotate(25deg); }
+      100% { transform: translateX(100%) rotate(25deg); }
+    }
+
+    .btn-glow-submit:hover {
+      box-shadow: 0 12px 28px -2px rgba(37, 99, 235, 0.65);
+      transform: translateY(-1.5px);
+    }
+
+    .btn-glow-submit:active {
+      transform: scale(0.985);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-glow-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-glow-submit svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-glow-submit:hover svg {
+      transform: translateX(3px);
+    }
+
+    .btn-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #FFFFFF;
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn-glow-submit.loading .btn-spinner {
+      display: inline-block;
+    }
+
+    .btn-glow-submit.loading svg {
+      display: none;
+    }
+
+    /* ==========================================================================
+       SUCCESS DIGITAL PASS
+       ========================================================================== */
+    .success-wrapper {
+      display: none;
+      padding: 24px 22px 26px;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      animation: cardEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .success-wrapper.visible {
+      display: flex;
+    }
+
+    .badge-check {
+      width: 70px;
+      height: 70px;
+      background: #DCFCE7;
+      border: 2px solid #86EFAC;
+      border-radius: 50%;
+      color: #16A34A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 24px rgba(34, 197, 94, 0.4);
+      animation: popBadge 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popBadge {
+      0% { transform: scale(0.3); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .badge-check svg {
+      width: 38px;
+      height: 38px;
+    }
+
+    .success-title-box {
+      text-align: center;
+    }
+
+    .success-title-box h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.015em;
+    }
+
+    .success-title-box p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .pass-ticket {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px dashed rgba(37, 99, 235, 0.4);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .pass-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding-bottom: 8px;
+    }
+
+    .pass-tag {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+    }
+
+    .pass-code {
+      font-family: monospace;
+      font-size: 12.5px;
+      font-weight: 700;
+      background: #EFF6FF;
+      color: #1E40AF;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid #BFDBFE;
+    }
+
+    .pass-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .pass-item-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .pass-item-val {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: right;
+    }
+
+    .pass-item-val.highlight {
+      font-family: monospace;
+      font-size: 16px;
+      color: var(--primary);
+    }
+
+    .barcode-strip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .barcode-svg {
+      width: 100%;
+      height: 32px;
+      color: #0F172A;
+      opacity: 0.85;
+    }
+
+    .btn-reset-glass {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--primary);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1.5px solid rgba(37, 99, 235, 0.35);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .btn-reset-glass:hover {
+      background: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18);
+    }
+
+    /* ==========================================================================
+       BACKGROUND MASTER GALLERY & MODALS
+       ========================================================================== */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 15, 29, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-backdrop.visible {
+      display: flex;
+    }
+
+    .modal-panel {
+      width: 100%;
+      max-width: 480px;
+      max-height: 88vh;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(24px);
+      border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+      box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalSlide 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-panel.wide-panel {
+      max-width: 760px;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-head {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-head h3 {
+      font-size: 17.5px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .modal-close {
+      width: 38px;
+      height: 38px;
+      border: none;
+      background: none;
+      font-size: 24px;
+      color: #64748B;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .modal-close:hover {
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--text);
+    }
+
+    .modal-content-area {
+      padding: 18px 22px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    /* DATA VIEWER FULL-PAGE DASHBOARD STYLES */
+    .full-page-dashboard {
+      width: 100%;
+      max-width: 1080px;
+      min-height: 85vh;
+      margin: 0 auto;
+      padding: 24px 28px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius-2xl);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      animation: pageFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .dashboard-header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-back-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1.5px solid #E2E8F0;
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: var(--radius-full);
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: var(--transition);
+    }
+
+    .btn-back-nav:hover {
+      background: #EFF6FF;
+      border-color: #BFDBFE;
+      color: var(--primary);
+      transform: translateX(-2px);
+    }
+
+    .dashboard-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .stat-mini-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .stat-mini-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748B;
+    }
+
+    .stat-mini-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .data-table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-lg);
+      background: #FFFFFF;
+      min-height: 260px;
+      max-height: 520px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    .data-table th {
+      background: #F8FAFC;
+      color: #334155;
+      font-weight: 700;
+      padding: 12px 14px;
+      border-bottom: 2px solid #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #F1F5F9;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .data-table tbody tr:hover {
+      background: #F0F7FF;
+    }
+
+    .row-actions-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-row-edit {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      cursor: pointer;
+      padding: 5px 10px;
+      color: #1D4ED8;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: var(--transition);
+    }
+
+    .btn-row-edit:hover {
+      background: #DBEAFE;
+      color: #1E40AF;
+      transform: translateY(-1px);
+    }
+
+    .btn-row-delete {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      cursor: pointer;
+      padding: 5px 10px;
+      color: #DC2626;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: var(--transition);
+    }
+
+    .btn-row-delete:hover {
+      background: #FEE2E2;
+      color: #B91C1C;
+      transform: translateY(-1px);
+    }
+
+    .custom-table-checkbox {
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+      accent-color: var(--primary);
+      border-radius: 4px;
+    }
+
+    .export-grid-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(40px);
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 11px 22px;
+      border-radius: var(--radius-full);
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast-msg.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .section-subtitle {
+      font-size: 12.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .theme-option-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .theme-card-btn {
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid #E2E8F0;
+      background: #FFFFFF;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-card-btn:hover, .theme-card-btn.active {
+      border-color: var(--primary);
+      background: #EFF6FF;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    }
+
+    .theme-card-btn.active::before {
+      content: '✓ Đang chọn';
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .theme-card-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .theme-card-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .fx-toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .fx-chip-btn {
+      padding: 7px 12px;
+      border-radius: var(--radius-full);
+      border: 1.5px solid #CBD5E1;
+      background: #FFFFFF;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition);
+    }
+
+    .fx-chip-btn.active {
+      background: #DBEAFE;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .file-drop-zone {
+      border: 2px dashed #94A3B8;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      background: #F8FAFC;
+      transition: var(--transition);
+    }
+
+    .file-drop-zone:hover {
+      border-color: var(--primary);
+      background: #EFF6FF;
+    }
+  </style>
+</head>
+<body>
+
+<!-- LIVING CANVAS & CINEMATIC SCENERY SYSTEM -->
+<div class="bg-stage" aria-hidden="true">
+  <!-- Optional Custom Fullscreen Video Element -->
+  <video id="bgVideo" autoplay loop muted playsinline preload="auto"></video>
+  
+  <!-- Living Anime Scenery Canvas (Train, Forest, Sunset, Aurora, Galaxy) -->
+  <canvas id="sceneryCanvas"></canvas>
+  
+  <!-- Dynamic Particle FX Canvas (Petals, Fireflies, Shooting Stars, Sunlight Rays) -->
+  <canvas id="fxCanvas"></canvas>
+
+  <!-- Ambient Light & Vignette Overlay -->
+  <div class="bg-lighting-overlay" id="bgOverlay"></div>
+</div>
+
+<!-- TOP FLOATING GLASS TOOLBAR -->
+<div class="top-toolbar">
+  <div class="toolbar-chip" id="schoolTopBadge" title="Bấm 5 lần liên tiếp để mở bảng quản trị viên">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+      <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+    </svg>
+    <span id="topOrgText">ĐH Tây Nguyên</span>
+  </div>
+
+  <div class="toolbar-actions">
+    <!-- Nút Mở Trang Dữ Liệu Thành Viên & Xuất Excel / JSON / Copy -->
+    <button type="button" class="icon-action-btn" id="openDataViewerBtn" title="Xem danh sách dữ liệu thành viên & Xuất Excel/JSON/Copy" style="position: relative;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        <line x1="3" y1="9" x2="21" y2="9"/>
+        <line x1="3" y1="15" x2="21" y2="15"/>
+        <line x1="9" y1="3" x2="9" y2="21"/>
+      </svg>
+      <span id="dataCountBadge" style="position: absolute; top: -4px; right: -4px; background: #2563EB; color: white; font-size: 10px; font-weight: 800; padding: 1px 5px; border-radius: 99px; min-width: 16px; text-align: center; border: 1.5px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">0</span>
+    </button>
+
+    <!-- Nút Mở Kho Phông Nền Đỉnh Cao & Video -->
+    <button type="button" class="icon-action-btn" id="openBgPickerBtn" title="Chọn phông nền sống động / Tải video">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+    </button>
+
+    <!-- Nút Đổi Hiệu Ứng Nhanh -->
+    <button type="button" class="icon-action-btn" id="quickSceneSwitchBtn" title="Chuyển đổi cảnh nhanh">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+      </svg>
+    </button>
+
+    <!-- Nút Âm Thanh Thiên Nhiên Thư Giãn (Web Audio Synth) -->
+    <button type="button" class="icon-action-btn" id="toggleAudioBtn" title="Bật/Tắt âm thanh thiên nhiên thư giãn">
+      <svg id="audioIconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <line x1="23" y1="9" x2="17" y2="15"></line>
+        <line x1="17" y1="9" x2="23" y2="15"></line>
+      </svg>
+      <svg id="audioIconOn" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- MAIN VIEWPORT -->
+<main class="app-viewport">
+  <div class="glass-card" id="formCard">
+    
+    <!-- CARD HEADER -->
+    <header class="card-header">
+      <div class="header-badge-row">
+        <div class="university-pill" id="univPillBtn" title="Đơn vị tổ chức">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+          <span id="orgFullName">Trường Đại học Tây Nguyên</span>
+        </div>
+
+        <div class="live-pulse-badge">
+          <span class="pulse-dot"></span>
+          <span>Trực tiếp</span>
+        </div>
+      </div>
+
+      <h1 class="event-main-title" id="eventMainTitle">Nhập thông tin thành viên</h1>
+    </header>
+
+    <!-- STEP 1: FORM VIEW -->
+    <section id="formViewBox" aria-label="Biểu mẫu nhập thông tin thành viên">
+      <form id="mainCheckinForm" novalidate>
+        <div class="card-body">
+
+          <!-- DUPLICATE BANNER -->
+          <div id="duplicateBanner" class="banner-box" role="alert" aria-live="polite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span id="duplicateBannerMsg"></span>
+          </div>
+
+          <!-- FIELD 1: MSSV -->
+          <div class="input-group">
+            <div class="label-row">
+              <label for="mssvInput" class="custom-label">
+                Mã số sinh viên (MSSV) <span class="star-req">*</span>
+              </label>
+              <span class="counter-pill" id="digitBadge">8–10 số</span>
+            </div>
+
+            <div class="input-shell">
+              <span class="input-icon-left">
+                <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="16" rx="2"/>
+                  <line x1="7" y1="8" x2="17" y2="8"/>
+                  <line x1="7" y1="12" x2="13" y2="12"/>
+                  <line x1="7" y1="16" x2="10" y2="16"/>
+                </svg>
+              </span>
+
+              <input
+                type="text"
+                id="mssvInput"
+                name="mssv"
+                class="glass-input"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                maxlength="10"
+                autocomplete="off"
+                enterkeyhint="next"
+                placeholder="Nhập MSSV (VD: 21001234)"
+                aria-required="true"
+                aria-invalid="false"
+                aria-describedby="mssvErrorAlert"
+              />
+
+              <button type="button" class="btn-clear" id="clearMssv" aria-label="Xoá ô MSSV">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <div id="mssvErrorAlert" class="error-tag" role="alert">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span id="mssvErrorText"></span>
+            </div>
+          </div>
+
+          <!-- FIELD 2: HỌ VÀ TÊN -->
+          <div class="input-group">
+            <div class="label-row">
+              <label for="fullNameInput" class="custom-label">
+                Họ và tên <span class="star-req">*</span>
+              </label>
+              <span class="counter-pill">Tối thiểu 2 từ</span>
+            </div>
+
+            <div class="input-shell">
+              <span class="input-icon-left">
+                <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </span>
+
+              <input
+                type="text"
+                id="fullNameInput"
+                name="fullName"
+                class="glass-input"
+                autocapitalize="words"
+                autocomplete="name"
+                enterkeyhint="done"
+                maxlength="60"
+                placeholder="Nhập họ và tên (VD: Nguyễn Văn An)"
+                aria-required="true"
+                aria-invalid="false"
+                aria-describedby="fullNameErrorAlert"
+              />
+
+              <button type="button" class="btn-clear" id="clearName" aria-label="Xoá ô Họ tên">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <div id="fullNameErrorAlert" class="error-tag" role="alert">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span id="fullNameErrorText"></span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- STICKY ACTION FOOTER -->
+        <div class="card-footer">
+          <button type="submit" id="submitBtn" class="btn-glow-submit" aria-label="Xác nhận gửi thông tin">
+            <span class="btn-spinner" aria-hidden="true"></span>
+            <span id="btnText">Xác nhận gửi thông tin</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- STEP 2: DIGITAL TICKET CONFIRMATION -->
+    <section id="successViewBox" class="success-wrapper" aria-label="Thẻ thành viên điện tử">
+      <div class="badge-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <div class="success-title-box">
+        <h2>Xác Nhận Thành Công!</h2>
+        <p>Thông tin thành viên đã được lưu thành công</p>
+      </div>
+
+      <div class="pass-ticket">
+        <div class="pass-top-row">
+          <span class="pass-tag">Thẻ Thành Viên Điện Tử</span>
+          <span class="pass-code" id="ticketCode">#TN-78392</span>
+        </div>
+
+        <div class="pass-item">
+          <span class="pass-item-label">MSSV:</span>
+          <span class="pass-item-val highlight" id="resMssv">--</span>
+        </div>
+
+        <div class="pass-item">
+          <span class="pass-item-label">Họ và tên:</span>
+          <span class="pass-item-val" id="resName">--</span>
+        </div>
+
+        <div class="pass-item">
+          <span class="pass-item-label">Thời gian:</span>
+          <span class="pass-item-val" id="resTime">--</span>
+        </div>
+
+        <div class="pass-item">
+          <span class="pass-item-label">Đơn vị:</span>
+          <span class="pass-item-val" id="resUnit">Trường Đại học Tây Nguyên</span>
+        </div>
+
+        <!-- MOCK BARCODE -->
+        <div class="barcode-strip">
+          <svg class="barcode-svg" viewBox="0 0 200 32" preserveAspectRatio="none">
+            <rect x="0" y="0" width="3" height="32" fill="currentColor"/>
+            <rect x="6" y="0" width="2" height="32" fill="currentColor"/>
+            <rect x="11" y="0" width="4" height="32" fill="currentColor"/>
+            <rect x="18" y="0" width="1" height="32" fill="currentColor"/>
+            <rect x="22" y="0" width="3" height="32" fill="currentColor"/>
+            <rect x="28" y="0" width="5" height="32" fill="currentColor"/>
+            <rect x="36" y="0" width="2" height="32" fill="currentColor"/>
+            <rect x="42" y="0" width="3" height="32" fill="currentColor"/>
+            <rect x="48" y="0" width="1" height="32" fill="currentColor"/>
+            <rect x="52" y="0" width="4" height="32" fill="currentColor"/>
+            <rect x="60" y="0" width="2" height="32" fill="currentColor"/>
+            <rect x="65" y="0" width="5" height="32" fill="currentColor"/>
+            <rect x="73" y="0" width="3" height="32" fill="currentColor"/>
+            <rect x="79" y="0" width="2" height="32" fill="currentColor"/>
+            <rect x="84" y="0" width="4" height="32" fill="currentColor"/>
+            <rect x="91" y="0" width="2" height="32" fill="currentColor"/>
+            <rect x="96" y="0" width="3" height="32" fill="currentColor"/>
+            <rect x="102" y="0" width="5" height="32" fill="currentColor"/>
+            <rect x="110" y="0" width="2" height="32" fill="currentColor"/>
+            <rect x="115" y="0" width="3" height="32" fill="currentColor"/>
+            <rect x="121" y="0" width="1" height="32" fill="currentColor"/>
+            <rect x="125" y="0" width="4" height="32" fill="currentColor"/>
+            <rect x="132" y="0" width="3" height="32" fill="currentColor"/>
+            <rect x="138" y="0" width="2" height="32" fill="currentColor"/>
+            <rect x="143" y="0" width="5" height="32" fill="currentColor"/>
+            <rect x="151" y="0" width="2" height="32" fill="currentColor"/>
+            <rect x="156" y="0" width="4" height="32" fill="currentColor"/>
+            <rect x="163" y="0" width="1" height="32" fill="currentColor"/>
+            <rect x="167" y="0" width="3" height="32" fill="currentColor"/>
+            <rect x="173" y="0" width="5" height="32" fill="currentColor"/>
+            <rect x="181" y="0" width="2" height="32" fill="currentColor"/>
+            <rect x="186" y="0" width="4" height="32" fill="currentColor"/>
+            <rect x="193" y="0" width="3" height="32" fill="currentColor"/>
+          </svg>
+          <span style="font-family: monospace; font-size: 11px; letter-spacing: 1.5px; color: #64748B;" id="barcodeLabel">TN-MEMBER-VERIFIED</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+        <button type="button" id="resetBtn" class="btn-glow-submit" style="min-height: 48px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span>Nhập cho thành viên khác</span>
+        </button>
+        <button type="button" id="viewAllDataFromSuccessBtn" class="btn-reset-glass" style="min-height: 44px; font-size: 13.5px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="3" y1="15" x2="21" y2="15"/>
+            <line x1="9" y1="3" x2="9" y2="21"/>
+          </svg>
+          <span>Xem danh sách tất cả thành viên</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- FULL-PAGE MASTER DASHBOARD: DANH SÁCH DỮ LIỆU THÀNH VIÊN -->
+  <section class="glass-card full-page-dashboard" id="dataDashboardPage" style="display: none;" aria-label="Trang quản lý danh sách dữ liệu thành viên">
+    
+    <!-- DASHBOARD TOP HEADER BAR -->
+    <div class="dashboard-header-bar">
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <button type="button" class="btn-back-nav" id="backToFormBtn" title="Quay lại biểu mẫu nhập liệu">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Quay lại nhập liệu</span>
+        </button>
+
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h2 style="font-size: 20px; font-weight: 800; color: var(--text); margin: 0;">Danh sách dữ liệu thành viên</h2>
+            <span class="live-pulse-badge" style="padding: 3px 8px;">
+              <span class="pulse-dot"></span>
+              <span>Trực tiếp</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <!-- NÚT THÊM THÀNH VIÊN MỚI TRỰC TIẾP -->
+        <button type="button" id="addNewMemberBtn" class="export-grid-btn" style="background: #2563EB; color: #FFFFFF; font-weight: 800; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);" title="Thêm thành viên mới thủ công (Yêu cầu mật khẩu Admin)">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>+ Thêm thành viên</span>
+        </button>
+
+        <!-- NÚT XÓA ĐÃ CHỌN (BULK DELETE) -->
+        <button type="button" id="bulkDeleteBtn" class="export-grid-btn" style="display: none; background: #EF4444; color: #FFFFFF; font-weight: 700;" title="Xóa các thành viên đã được tích chọn">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          <span id="bulkDeleteCountText">Xóa đã chọn</span>
+        </button>
+
+        <a href="/data.html" target="_blank" class="export-grid-btn" style="background: #F1F5F9; color: #334155; border: 1.5px solid #CBD5E1; text-decoration: none;" title="Mở trang này sang tab trình duyệt riêng biệt">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span>Mở Tab riêng</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- STATS OVERVIEW CARDS -->
+    <div class="dashboard-stats-grid">
+      <div class="stat-mini-card">
+        <span class="stat-mini-label">Tổng số thành viên</span>
+        <div style="display: flex; align-items: baseline; gap: 6px;">
+          <span class="stat-mini-value" id="dashboardTotalCount" style="color: var(--primary);">0</span>
+          <span style="font-size: 13px; color: #64748B; font-weight: 600;">người</span>
+        </div>
+      </div>
+
+      <div class="stat-mini-card">
+        <span class="stat-mini-label">Thành viên mới nhất</span>
+        <span class="stat-mini-value" id="dashboardLatestName" style="font-size: 15px; font-weight: 700; color: #0F172A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Chưa có</span>
+      </div>
+    </div>
+
+    <!-- TOOLBAR ACTIONS & EXPORT SUITE -->
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; background: #F8FAFC; padding: 12px 14px; border-radius: var(--radius-lg); border: 1px solid #E2E8F0;">
+      <div style="flex: 1; min-width: 240px;">
+        <input 
+          type="text" 
+          id="dataSearchInput" 
+          class="custom-input" 
+          placeholder="🔍 Tìm kiếm theo MSSV, Họ và tên hoặc Mã thẻ..." 
+          style="padding: 9px 14px; font-size: 13.5px; min-height: 40px; background: #FFFFFF;"
+        />
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <!-- NÚT SAO CHÉP TOÀN BỘ BẢNG DÁN EXCEL/SHEETS -->
+        <button type="button" id="copyTableToExcelBtn" class="export-grid-btn" style="background: #2563EB; color: #FFFFFF;" title="Sao chép toàn bộ bảng, sang Excel hoặc Google Sheet bấm Ctrl+V là xong!">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>📋 Copy dán Excel / Sheet</span>
+        </button>
+
+        <!-- NÚT XUẤT CSV EXCEL -->
+        <button type="button" id="exportExcelBtn" class="export-grid-btn" style="background: #16A34A; color: #FFFFFF;" title="Tải tệp CSV mở trực tiếp trên Excel">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Xuất Excel (.csv)</span>
+        </button>
+
+        <!-- NÚT XUẤT JSON -->
+        <button type="button" id="exportJsonBtn" class="export-grid-btn" style="background: #0284C7; color: #FFFFFF;" title="Tải tệp dữ liệu JSON">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+          <span>Xuất JSON</span>
+        </button>
+
+        <!-- NÚT SAO CHÉP JSON -->
+        <button type="button" id="copyJsonBtn" class="export-grid-btn" style="background: #FFFFFF; color: #334155; border: 1.5px solid #CBD5E1;" title="Sao chép JSON vào bộ nhớ tạm">
+          <span>Copy JSON</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- DATA TABLE CONTAINER -->
+    <div class="data-table-container">
+      <table class="data-table" id="membersDataTable">
+        <thead>
+          <tr>
+            <th style="width: 38px; text-align: center;">
+              <input type="checkbox" id="selectAllCheckbox" class="custom-table-checkbox" title="Chọn tất cả">
+            </th>
+            <th style="width: 45px; text-align: center;">STT</th>
+            <th style="min-width: 120px;">Mã số sinh viên (MSSV)</th>
+            <th style="min-width: 170px;">Họ và tên</th>
+            <th style="min-width: 120px;">Mã thẻ thành viên</th>
+            <th style="min-width: 140px;">Thời gian ghi nhận</th>
+            <th style="min-width: 120px;">Đơn vị</th>
+            <th style="min-width: 150px; text-align: center;">Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="dataTableBody">
+          <!-- Rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="dataEmptyBox" style="display: none; padding: 48px 16px; text-align: center; color: var(--text-muted); background: #FFFFFF; border-radius: var(--radius-lg); border: 1px dashed #CBD5E1;">
+      <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#94A3B8" stroke-width="1.5" style="margin: 0 auto 12px; display: block;">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+      </svg>
+      <div style="font-weight: 800; font-size: 16px; color: var(--text);">Chưa có dữ liệu thành viên</div>
+      <div style="font-size: 13px; margin-top: 6px;">Dữ liệu sẽ tự động xuất hiện tại đây ngay khi có thành viên gửi thông tin hoặc bạn tự thêm.</div>
+      <div style="display: flex; gap: 8px; justify-content: center; margin-top: 14px; flex-wrap: wrap;">
+        <button type="button" id="emptyAddBtn" class="btn-glow-submit" style="display: inline-flex; width: auto; min-height: 40px; padding: 0 20px; font-size: 13.5px;">
+          + Thêm thành viên ngay
+        </button>
+        <button type="button" id="emptyToFormBtn" class="btn-reset-glass" style="display: inline-flex; width: auto; min-height: 40px; padding: 0 18px; font-size: 13.5px;">
+          Vào trang nhập biểu mẫu
+        </button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD FOOTER ACTION -->
+    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; flex-wrap: wrap; gap: 8px;">
+      <button type="button" id="clearAllTableDataBtn" style="background: none; border: none; color: var(--error); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 6px;">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        <span>Xóa toàn bộ dữ liệu máy</span>
+      </button>
+
+      <span id="dataRowCountLabel" style="font-size: 12.5px; color: #64748B; font-weight: 600;">Hiển thị 0 thành viên</span>
+    </div>
+
+  </section>
+</main>
+
+<!-- MODAL THÊM MỚI / CHỈNH SỬA THÀNH VIÊN (CRUD MODAL) -->
+<div id="memberFormModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width: 480px;">
+    <div class="modal-head">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <svg id="memberFormIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <h3 id="memberFormModalTitle" style="font-size: 16.5px; margin: 0;">Thêm thành viên mới</h3>
+      </div>
+      <button type="button" class="modal-close" id="closeMemberFormModalBtn">&times;</button>
+    </div>
+
+    <form id="memberCrudForm" class="modal-content-area" style="gap: 14px; padding: 18px 22px 24px;">
+      <input type="hidden" id="crudMemberId" value="">
+
+      <div class="input-group">
+        <label for="crudMssvInput" style="font-size: 13px; font-weight: 700; color: var(--text);">
+          Mã số sinh viên (MSSV) <span style="color: var(--error);">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="crudMssvInput" 
+          class="custom-input" 
+          placeholder="Ví dụ: 22103045 hoặc SV..." 
+          required 
+          style="font-size: 13.5px; text-transform: uppercase;"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="crudNameInput" style="font-size: 13px; font-weight: 700; color: var(--text);">
+          Họ và tên thành viên <span style="color: var(--error);">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="crudNameInput" 
+          class="custom-input" 
+          placeholder="Ví dụ: Nguyễn Văn An" 
+          required 
+          style="font-size: 13.5px;"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="crudCodeInput" style="font-size: 13px; font-weight: 700; color: var(--text);">
+          Mã thẻ thành viên <span style="color: var(--error);">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="crudCodeInput" 
+          class="custom-input" 
+          placeholder="Ví dụ: CLB-TN-088" 
+          required 
+          style="font-size: 13.5px;"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="crudUnitInput" style="font-size: 13px; font-weight: 700; color: var(--text);">
+          Đơn vị / Khoa
+        </label>
+        <input 
+          type="text" 
+          id="crudUnitInput" 
+          class="custom-input" 
+          placeholder="Trường Đại học Tây Nguyên" 
+          style="font-size: 13.5px;"
+        />
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px;">
+        <button type="button" id="cancelMemberFormBtn" class="btn-reset-glass" style="min-height: 42px; padding: 0 16px; font-size: 13px;">
+          Hủy bỏ
+        </button>
+        <button type="submit" id="saveMemberFormBtn" class="btn-glow-submit" style="min-height: 42px; padding: 0 20px; font-size: 13.5px; width: auto;">
+          <span>Lưu thông tin</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL XÁC NHẬN XÓA 1 DÒNG DỮ LIỆU (CUSTOM IN-APP CONFIRM) -->
+<div id="confirmDeleteModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width: 420px; text-align: center;">
+    <div class="modal-content-area" style="gap: 16px; padding: 24px 20px 20px;">
+      <div style="width: 54px; height: 54px; border-radius: 50%; background: #FEE2E2; border: 4px solid #FEF2F2; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #DC2626;">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          <line x1="10" y1="11" x2="10" y2="17"></line>
+          <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+      </div>
+
+      <div>
+        <h3 style="font-size: 17px; color: #0F172A; margin: 0 0 6px;">Xác nhận xóa thành viên?</h3>
+        <p id="confirmDeleteMsg" style="font-size: 13.5px; color: #64748B; margin: 0; line-height: 1.5;">
+          Bạn có chắc chắn muốn xóa thành viên này khỏi danh sách?
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
+        <button type="button" id="cancelDeleteBtn" class="btn-reset-glass" style="flex: 1; min-height: 42px; font-size: 13.5px;">
+          Hủy bỏ
+        </button>
+        <button type="button" id="executeDeleteBtn" class="btn-glow-submit" style="flex: 1; min-height: 42px; font-size: 13.5px; background: #DC2626; border-color: #B91C1C; box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);">
+          Xóa thành viên
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL XÁC NHẬN XÓA TOÀN BỘ HOẶC XÓA NHIỀU MỤC -->
+<div id="confirmClearModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width: 420px; text-align: center;">
+    <div class="modal-content-area" style="gap: 16px; padding: 24px 20px 20px;">
+      <div style="width: 54px; height: 54px; border-radius: 50%; background: #FEE2E2; border: 4px solid #FEF2F2; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #DC2626;">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+
+      <div>
+        <h3 id="confirmClearTitle" style="font-size: 17px; color: #0F172A; margin: 0 0 6px;">Xác nhận xóa dữ liệu?</h3>
+        <p id="confirmClearMsg" style="font-size: 13.5px; color: #64748B; margin: 0; line-height: 1.5;">
+          Thao tác này sẽ xóa vĩnh viễn các bản ghi đã chọn khỏi thiết bị.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
+        <button type="button" id="cancelClearBtn" class="btn-reset-glass" style="flex: 1; min-height: 42px; font-size: 13.5px;">
+          Hủy bỏ
+        </button>
+        <button type="button" id="executeClearBtn" class="btn-glow-submit" style="flex: 1; min-height: 42px; font-size: 13.5px; background: #DC2626; border-color: #B91C1C; box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);">
+          Xác nhận xóa
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BACKGROUND MASTER GALLERY & CONTROLS MODAL -->
+<div id="bgModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3>Kho Phông Nền Đỉnh Cao & Hiệu Ứng</h3>
+      <button type="button" class="modal-close" id="closeBgModalBtn">&times;</button>
+    </div>
+    <div class="modal-content-area">
+      
+      <div class="section-subtitle">Chủ đề sống động (Living Scenes)</div>
+      <div class="theme-option-grid">
+        <button type="button" class="theme-card-btn active" data-theme="anime-train">
+          <span class="theme-card-title">🚆 Đoàn tàu ven biển</span>
+          <span class="theme-card-desc">Sóng lấp lánh & hoa hồng trắng</span>
+        </button>
+
+        <button type="button" class="theme-card-btn" data-theme="highlands-waterfall">
+          <span class="theme-card-title">🌲 Thác nước Tây Nguyên</span>
+          <span class="theme-card-desc">Rừng thông hùng vĩ & sương mai</span>
+        </button>
+
+        <button type="button" class="theme-card-btn" data-theme="sunset">
+          <span class="theme-card-title">🌅 Hoàng hôn biển vàng</span>
+          <span class="theme-card-desc">Ánh vàng rực rỡ & cánh hải âu</span>
+        </button>
+
+        <button type="button" class="theme-card-btn" data-theme="aurora-stars">
+          <span class="theme-card-title">🌌 Cực quang & Sao băng</span>
+          <span class="theme-card-desc">Dải ngân hà & tinh tú lấp lánh</span>
+        </button>
+
+        <button type="button" class="theme-card-btn" data-theme="sakura-river">
+          <span class="theme-card-title">🌸 Sông hoa anh đào</span>
+          <span class="theme-card-desc">Cánh hoa xoay chuyển mặt nước</span>
+        </button>
+
+        <button type="button" class="theme-card-btn" data-theme="summer-blue">
+          <span class="theme-card-title">🌊 Biển xanh ngọc bích</span>
+          <span class="theme-card-desc">Ánh nắng nhiệt đới trong vắt</span>
+        </button>
+      </div>
+
+      <div class="section-subtitle">Hiệu ứng hạt chuyển động (Interactive FX)</div>
+      <div class="fx-toggle-row">
+        <button type="button" class="fx-chip-btn active" id="togglePetalsFx">🌸 Cánh hoa rơi</button>
+        <button type="button" class="fx-chip-btn active" id="toggleFirefliesFx">✨ Đốm sáng thần tiên</button>
+        <button type="button" class="fx-chip-btn active" id="toggleGodraysFx">☀️ Tia nắng mặt trời</button>
+        <button type="button" class="fx-chip-btn active" id="toggleMeteorsFx">🌠 Sao băng</button>
+      </div>
+
+      <div class="section-subtitle">Tải lên Video / Ảnh nền riêng</div>
+      <label class="file-drop-zone" for="videoFileInput">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary); margin-bottom: 6px;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <div style="font-size: 13.5px; font-weight: 700; color: var(--text);">Chọn Video từ máy bạn (MP4 / WebM)</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Tự động chạy vòng lặp toàn màn hình siêu mượt</div>
+        <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/ogg,image/*" style="display: none;">
+      </label>
+
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL (5 Taps on Badge) -->
+<div id="adminBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3>Quản trị viên • Xuất dữ liệu Excel</h3>
+      <button type="button" class="modal-close" id="closeAdminModalBtn">&times;</button>
+    </div>
+    <div class="modal-content-area">
+      <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 13px; color: #1E40AF; font-weight: 600;">Tổng số thành viên đã ghi nhận</div>
+          <div style="font-size: 11.5px; color: #60A5FA;">Lưu trữ nội bộ an toàn trên thiết bị</div>
+        </div>
+        <div style="font-size: 26px; font-weight: 800; color: #1D4ED8;" id="adminCount">0</div>
+      </div>
+
+      <button type="button" id="exportCsvBtn" class="btn-glow-submit" style="background: #16A34A; min-height: 48px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span>Tải danh sách CSV (Excel tiếng Việt)</span>
+      </button>
+
+      <button type="button" id="clearAllDataBtn" class="btn-reset-glass" style="color: var(--error); border-color: rgba(225, 29, 72, 0.3); min-height: 44px;">
+        Xoá toàn bộ dữ liệu lưu trữ
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL XÁC THỰC MẬT KHẨU QUẢN TRỊ VIÊN -->
+<div id="adminAuthModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width: 400px;">
+    <div class="modal-head">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <h3 style="font-size: 16.5px; margin: 0; font-weight: 800; color: #0F172A;">Xác thực Quản trị viên</h3>
+      </div>
+      <button type="button" class="modal-close" id="closeAdminAuthModalBtn">&times;</button>
+    </div>
+    <form id="adminAuthForm" class="modal-content-area" style="gap: 14px; padding: 18px 22px 24px;">
+      <p style="font-size: 13px; color: #64748B; margin: 0; line-height: 1.5;">
+        Danh sách đang ở chế độ <b>Chỉ xem</b>. Vui lòng nhập mật khẩu Quản trị viên để thực hiện thao tác Thêm, Sửa hoặc Xóa dữ liệu.
+      </p>
+
+      <div class="input-group">
+        <label for="adminPasswordInput" style="font-size: 13px; font-weight: 700; color: var(--text);">
+          Mật khẩu Quản trị viên <span style="color: var(--error);">*</span>
+        </label>
+        <input 
+          type="password" 
+          id="adminPasswordInput" 
+          class="custom-input" 
+          placeholder="Nhập mật khẩu quản trị viên..." 
+          autocomplete="current-password"
+          required 
+          style="font-size: 14px;"
+        />
+        <div id="adminAuthError" style="display: none; font-size: 12.5px; color: var(--error); font-weight: 600; margin-top: 4px;">
+          Mật khẩu quản trị viên không chính xác! Vui lòng thử lại.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px;">
+        <button type="button" id="cancelAdminAuthBtn" class="btn-reset-glass" style="min-height: 42px; padding: 0 16px; font-size: 13px;">
+          Hủy bỏ
+        </button>
+        <button type="submit" class="btn-glow-submit" style="min-height: 42px; padding: 0 20px; font-size: 13.5px; width: auto; background: #2563EB;">
+          <span>Mở khóa</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- TOAST MESSAGE NOTIFICATION -->
+<div id="toastMsg" class="toast-msg">Đã sao chép vào bộ nhớ tạm!</div>
+
+<!-- ==========================================================================
+     MASTERCLASS GRAPHICS ENGINE & SCRIPT LOGIC
+     ========================================================================== -->
+<script>
+  /**
+   * ==========================================================================
+   * CẤU HÌNH HỆ THỐNG
+   * ==========================================================================
+   */
+  const TEN_BIEU_MAU = "Nhập thông tin thành viên";
+  const DON_VI = "Trường Đại học Tây Nguyên";
+  const API_URL = ""; 
+  const STORAGE_KEY = "sv_checkin_records_v1";
+
+  // Cập nhật DOM
+  document.getElementById('eventMainTitle').textContent = TEN_BIEU_MAU;
+  document.getElementById('orgFullName').textContent = DON_VI;
+  document.getElementById('topOrgText').textContent = "ĐH Tây Nguyên";
+  document.getElementById('resUnit').textContent = DON_VI;
+
+  // DOM elements
+  const mainCheckinForm = document.getElementById('mainCheckinForm');
+  const formViewBox = document.getElementById('formViewBox');
+  const successViewBox = document.getElementById('successViewBox');
+  const mssvInput = document.getElementById('mssvInput');
+  const fullNameInput = document.getElementById('fullNameInput');
+  const digitBadge = document.getElementById('digitBadge');
+  const clearMssv = document.getElementById('clearMssv');
+  const clearName = document.getElementById('clearName');
+  const mssvErrorAlert = document.getElementById('mssvErrorAlert');
+  const mssvErrorText = document.getElementById('mssvErrorText');
+  const fullNameErrorAlert = document.getElementById('fullNameErrorAlert');
+  const fullNameErrorText = document.getElementById('fullNameErrorText');
+  const duplicateBanner = document.getElementById('duplicateBanner');
+  const duplicateBannerMsg = document.getElementById('duplicateBannerMsg');
+  const submitBtn = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // Digital pass
+  const ticketCode = document.getElementById('ticketCode');
+  const resMssv = document.getElementById('resMssv');
+  const resName = document.getElementById('resName');
+  const resTime = document.getElementById('resTime');
+  const barcodeLabel = document.getElementById('barcodeLabel');
+
+  // Background & Video
+  const bgVideo = document.getElementById('bgVideo');
+  const bgOverlay = document.getElementById('bgOverlay');
+  const openBgPickerBtn = document.getElementById('openBgPickerBtn');
+  const quickSceneSwitchBtn = document.getElementById('quickSceneSwitchBtn');
+  const bgModalBackdrop = document.getElementById('bgModalBackdrop');
+  const closeBgModalBtn = document.getElementById('closeBgModalBtn');
+  const videoFileInput = document.getElementById('videoFileInput');
+  const themeCardBtns = document.querySelectorAll('.theme-card-btn');
+
+  // FX Toggles
+  const togglePetalsFx = document.getElementById('togglePetalsFx');
+  const toggleFirefliesFx = document.getElementById('toggleFirefliesFx');
+  const toggleGodraysFx = document.getElementById('toggleGodraysFx');
+  const toggleMeteorsFx = document.getElementById('toggleMeteorsFx');
+
+  let fxEnabled = {
+    petals: true,
+    fireflies: true,
+    godrays: true,
+    meteors: true
+  };
+
+  // Audio ambient synthesizer
+  const toggleAudioBtn = document.getElementById('toggleAudioBtn');
+  const audioIconOff = document.getElementById('audioIconOff');
+  const audioIconOn = document.getElementById('audioIconOn');
+  let audioContext = null;
+  let isAudioPlaying = false;
+
+  // Admin
+  const schoolTopBadge = document.getElementById('schoolTopBadge');
+  const adminBackdrop = document.getElementById('adminBackdrop');
+  const closeAdminModalBtn = document.getElementById('closeAdminModalBtn');
+  const adminCount = document.getElementById('adminCount');
+  const exportCsvBtn = document.getElementById('exportCsvBtn');
+  const clearAllDataBtn = document.getElementById('clearAllDataBtn');
+
+  let isSubmitting = false;
+  let tapCount = 0;
+  let tapTimer = null;
+  const sessionRecords = new Set();
+
+  const SCENES_LIST = ['anime-train', 'highlands-waterfall', 'sunset', 'aurora-stars', 'sakura-river', 'summer-blue'];
+  let currentTheme = 'anime-train';
+
+  /* ==========================================================================
+     CANVAS MASTER GRAPHICS SYSTEM
+     ========================================================================== */
+  const sceneryCanvas = document.getElementById('sceneryCanvas');
+  const sCtx = sceneryCanvas.getContext('2d');
+
+  const fxCanvas = document.getElementById('fxCanvas');
+  const fCtx = fxCanvas.getContext('2d');
+
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+
+  function resizeCanvases() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    sceneryCanvas.width = width;
+    sceneryCanvas.height = height;
+    fxCanvas.width = width;
+    fxCanvas.height = height;
+  }
+  window.addEventListener('resize', resizeCanvases);
+  resizeCanvases();
+
+  // Mouse / Touch Interactivity
+  let mouseX = width / 2;
+  let mouseY = height / 2;
+  let targetMouseX = width / 2;
+  let targetMouseY = height / 2;
+
+  window.addEventListener('mousemove', (e) => {
+    targetMouseX = e.clientX;
+    targetMouseY = e.clientY;
+  });
+
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+      targetMouseX = e.touches[0].clientX;
+      targetMouseY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+
+  // Scene Animation States
+  let trainX = -450;
+  let cloudOffset = 0;
+  let waveTime = 0;
+  let waterfallOffset = 0;
+  let auroraWave = 0;
+  let sunRayTime = 0;
+
+  // Particle Engines
+  // 1. Petals
+  const petals = [];
+  for (let i = 0; i < 35; i++) {
+    petals.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 8 + 5,
+      speedY: Math.random() * 0.9 + 0.5,
+      speedX: Math.random() * 1.1 + 0.3,
+      angle: Math.random() * Math.PI * 2,
+      rotationSpeed: (Math.random() - 0.5) * 0.04,
+      opacity: Math.random() * 0.45 + 0.55,
+      colorType: Math.random() > 0.4 ? 'white' : 'pink'
+    });
+  }
+
+  // 2. Fireflies & Sparkles
+  const fireflies = [];
+  for (let i = 0; i < 40; i++) {
+    fireflies.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius: Math.random() * 2.5 + 1,
+      baseAlpha: Math.random() * 0.6 + 0.3,
+      alphaSpeed: Math.random() * 0.04 + 0.015,
+      alphaPhase: Math.random() * Math.PI * 2,
+      speedX: (Math.random() - 0.5) * 0.6,
+      speedY: (Math.random() - 0.5) * 0.6,
+      color: Math.random() > 0.5 ? '#FDE047' : '#67E8F9'
+    });
+  }
+
+  // 3. Meteors (Shooting stars)
+  const meteors = [];
+  function spawnMeteor() {
+    if (Math.random() < 0.02 && fxEnabled.meteors) {
+      meteors.push({
+        x: Math.random() * (width + 200),
+        y: Math.random() * (height * 0.4),
+        length: Math.random() * 120 + 80,
+        speed: Math.random() * 14 + 10,
+        angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
+        opacity: 1
+      });
+    }
+  }
+
+  /* ==========================================================================
+     SCENE 1: ĐOÀN TÀU VEN BIỂN ANIME SHINKAI
+     ========================================================================== */
+  function drawSceneAnimeTrain() {
+    // Bầu trời Shinkai rực sáng
+    const sky = sCtx.createLinearGradient(0, 0, 0, height * 0.65);
+    sky.addColorStop(0, '#0284C7');
+    sky.addColorStop(0.35, '#38BDF8');
+    sky.addColorStop(0.7, '#7DD3FC');
+    sky.addColorStop(1, '#BAE6FD');
+    sCtx.fillStyle = sky;
+    sCtx.fillRect(0, 0, width, height * 0.65);
+
+    // Mây anime bồng bềnh đa tầng
+    cloudOffset += 0.3;
+    const horizonY = height * 0.52;
+
+    // Tầng mây xa
+    sCtx.save();
+    sCtx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+    for (let c = -2; c < 8; c++) {
+      const cx = ((c * 220 + cloudOffset * 0.6) % (width + 400)) - 150;
+      const cy = horizonY - 60 - Math.sin(c) * 15;
+      sCtx.beginPath();
+      sCtx.arc(cx, cy, 55, 0, Math.PI * 2);
+      sCtx.arc(cx + 45, cy - 30, 70, 0, Math.PI * 2);
+      sCtx.arc(cx + 105, cy - 15, 65, 0, Math.PI * 2);
+      sCtx.arc(cx + 155, cy + 10, 50, 0, Math.PI * 2);
+      sCtx.fill();
+    }
+    sCtx.restore();
+
+    // Biển xanh lấp lánh (Sparkling Ocean)
+    const ocean = sCtx.createLinearGradient(0, horizonY, 0, height);
+    ocean.addColorStop(0, '#0369A1');
+    ocean.addColorStop(0.35, '#0284C7');
+    ocean.addColorStop(0.8, '#0EA5E9');
+    ocean.addColorStop(1, '#0284C7');
+    sCtx.fillStyle = ocean;
+    sCtx.fillRect(0, horizonY, width, height - horizonY);
+
+    // Sóng biển dập dềnh & vệt nắng phản chiếu
+    waveTime += 0.035;
+    sCtx.save();
+    sCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    sCtx.lineWidth = 1.6;
+    for (let wy = horizonY + 8; wy < height; wy += 13) {
+      sCtx.beginPath();
+      const waveShift = Math.sin(wy * 0.05 + waveTime) * 16;
+      sCtx.moveTo(0, wy);
+      sCtx.bezierCurveTo(
+        width * 0.3, wy + Math.sin(waveTime + wy) * 4,
+        width * 0.7, wy - Math.cos(waveTime + wy) * 4,
+        width, wy
+      );
+      sCtx.stroke();
+    }
+    sCtx.restore();
+
+    // Đoàn tàu ven biển chuyển động mượt mà
+    trainX += 1.4;
+    if (trainX > width + 450) trainX = -480;
+
+    const trainY = horizonY - 18;
+    const trainWidth = 340;
+    const trainHeight = 24;
+
+    // Đường ray
+    sCtx.fillStyle = '#334155';
+    sCtx.fillRect(0, horizonY + 6, width, 5);
+
+    // Thân tàu trắng
+    sCtx.save();
+    sCtx.fillStyle = '#FFFFFF';
+    sCtx.shadowColor = 'rgba(0, 0, 0, 0.25)';
+    sCtx.shadowBlur = 10;
+    sCtx.beginPath();
+    sCtx.roundRect(trainX, trainY, trainWidth, trainHeight, 6);
+    sCtx.fill();
+
+    // Sọc xanh biển & cửa kính tàu
+    sCtx.fillStyle = '#2563EB';
+    sCtx.fillRect(trainX, trainY + 16, trainWidth, 4.5);
+    sCtx.fillStyle = '#38BDF8';
+    for (let w = 14; w < trainWidth - 24; w += 28) {
+      sCtx.fillRect(trainX + w, trainY + 4, 18, 10);
+    }
+    sCtx.restore();
+
+    // Bụi hoa hồng trắng tiền cảnh
+    drawForegroundRoses();
+  }
+
+  /* ==========================================================================
+     SCENE 2: THÁC NƯỚC & RỪNG THÔNG TÂY NGUYÊN
+     ========================================================================== */
+  function drawSceneHighlands() {
+    // Bầu trời sớm mai vùng cao
+    const sky = sCtx.createLinearGradient(0, 0, 0, height * 0.6);
+    sky.addColorStop(0, '#0F766E');
+    sky.addColorStop(0.4, '#14B8A6');
+    sky.addColorStop(0.8, '#99F6E4');
+    sky.addColorStop(1, '#CCFBF1');
+    sCtx.fillStyle = sky;
+    sCtx.fillRect(0, 0, width, height);
+
+    // Dãy núi xanh mờ phía xa
+    sCtx.save();
+    sCtx.fillStyle = '#0D9488';
+    sCtx.beginPath();
+    sCtx.moveTo(0, height * 0.45);
+    sCtx.lineTo(width * 0.3, height * 0.3);
+    sCtx.lineTo(width * 0.6, height * 0.42);
+    sCtx.lineTo(width, height * 0.28);
+    sCtx.lineTo(width, height);
+    sCtx.lineTo(0, height);
+    sCtx.fill();
+
+    // Đồi thông xanh mướt Tây Nguyên
+    sCtx.fillStyle = '#065F46';
+    sCtx.beginPath();
+    sCtx.moveTo(0, height * 0.55);
+    sCtx.bezierCurveTo(width * 0.4, height * 0.45, width * 0.7, height * 0.65, width, height * 0.5);
+    sCtx.lineTo(width, height);
+    sCtx.lineTo(0, height);
+    sCtx.fill();
+
+    // Hàng cây thông nhấp nhô
+    for (let px = 0; px < width + 40; px += 35) {
+      const treeH = 45 + (px % 30);
+      const treeY = height * 0.52 + Math.sin(px * 0.01) * 20;
+      sCtx.fillStyle = '#064E3B';
+      sCtx.beginPath();
+      sCtx.moveTo(px, treeY - treeH);
+      sCtx.lineTo(px - 14, treeY);
+      sCtx.lineTo(px + 14, treeY);
+      sCtx.closePath();
+      sCtx.fill();
+    }
+
+    // Thác nước chảy đổ sống động (Highlands Waterfall)
+    waterfallOffset += 2.5;
+    const wfX = width * 0.5;
+    const wfWidth = 55;
+    const wfGrad = sCtx.createLinearGradient(wfX, height * 0.4, wfX + wfWidth, height);
+    wfGrad.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
+    wfGrad.addColorStop(0.5, 'rgba(204, 251, 241, 0.95)');
+    wfGrad.addColorStop(1, 'rgba(255, 255, 255, 0.9)');
+    sCtx.fillStyle = wfGrad;
+    sCtx.fillRect(wfX - wfWidth / 2, height * 0.42, wfWidth, height * 0.58);
+
+    // Bọt nước sủi bọt tung trắng xoá
+    sCtx.fillStyle = '#FFFFFF';
+    for (let s = 0; s < 18; s++) {
+      const sx = wfX - 25 + (s * 4) + Math.sin(waterfallOffset * 0.2 + s) * 6;
+      const sy = height * 0.45 + ((waterfallOffset * 3 + s * 30) % (height * 0.5));
+      sCtx.beginPath();
+      sCtx.arc(sx, sy, 3.5, 0, Math.PI * 2);
+      sCtx.fill();
+    }
+    sCtx.restore();
+  }
+
+  /* ==========================================================================
+     SCENE 3: HOÀNG HÔN BIỂN VÀNG RỰC RỠ (SUNSET)
+     ========================================================================== */
+  function drawSceneSunset() {
+    const sky = sCtx.createLinearGradient(0, 0, 0, height * 0.65);
+    sky.addColorStop(0, '#C2410C');
+    sky.addColorStop(0.35, '#EA580C');
+    sky.addColorStop(0.7, '#F97316');
+    sky.addColorStop(1, '#FED7AA');
+    sCtx.fillStyle = sky;
+    sCtx.fillRect(0, 0, width, height * 0.65);
+
+    const horizonY = height * 0.52;
+
+    // Mặt trời hoàng hôn vàng rực toả sáng
+    const sunX = width * 0.5;
+    const sunY = horizonY - 15;
+    const sunGlow = sCtx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 140);
+    sunGlow.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    sunGlow.addColorStop(0.3, 'rgba(254, 240, 138, 0.9)');
+    sunGlow.addColorStop(0.7, 'rgba(251, 146, 60, 0.4)');
+    sunGlow.addColorStop(1, 'rgba(251, 146, 60, 0)');
+    sCtx.fillStyle = sunGlow;
+    sCtx.beginPath();
+    sCtx.arc(sunX, sunY, 140, 0, Math.PI * 2);
+    sCtx.fill();
+
+    // Biển hoàng hôn sắc cam đỏ lóng lánh
+    const ocean = sCtx.createLinearGradient(0, horizonY, 0, height);
+    ocean.addColorStop(0, '#7C2D12');
+    ocean.addColorStop(0.4, '#9A3412');
+    ocean.addColorStop(1, '#431407');
+    sCtx.fillStyle = ocean;
+    sCtx.fillRect(0, horizonY, width, height - horizonY);
+
+    // Vệt phản chiếu ánh mặt trời trên biển
+    waveTime += 0.03;
+    sCtx.save();
+    sCtx.strokeStyle = 'rgba(254, 240, 138, 0.65)';
+    sCtx.lineWidth = 2.2;
+    for (let wy = horizonY + 5; wy < height; wy += 14) {
+      const spread = (wy - horizonY) * 0.85;
+      sCtx.beginPath();
+      sCtx.moveTo(sunX - spread / 2 + Math.sin(waveTime + wy) * 8, wy);
+      sCtx.lineTo(sunX + spread / 2 + Math.sin(waveTime + wy) * 8, wy);
+      sCtx.stroke();
+    }
+    sCtx.restore();
+
+    // Cánh chim hải âu bay lượn
+    sCtx.save();
+    sCtx.strokeStyle = '#431407';
+    sCtx.lineWidth = 2.2;
+    for (let b = 0; b < 4; b++) {
+      const bx = ((width * 0.2 + b * 110 + cloudOffset * 0.5) % width);
+      const by = horizonY - 80 - (b * 18);
+      sCtx.beginPath();
+      sCtx.arc(bx - 7, by, 7, Math.PI, Math.PI * 1.85);
+      sCtx.stroke();
+      sCtx.beginPath();
+      sCtx.arc(bx + 7, by, 7, Math.PI * 1.15, 0);
+      sCtx.stroke();
+    }
+    sCtx.restore();
+  }
+
+  /* ==========================================================================
+     SCENE 4: CỰC QUANG & SAO BĂNG (AURORA BOREALIS & GALAXY)
+     ========================================================================== */
+  function drawSceneAurora() {
+    // Trời đêm vũ trụ thâm sâu
+    const sky = sCtx.createLinearGradient(0, 0, 0, height);
+    sky.addColorStop(0, '#020617');
+    sky.addColorStop(0.4, '#0F172A');
+    sky.addColorStop(1, '#1E1B4B');
+    sCtx.fillStyle = sky;
+    sCtx.fillRect(0, 0, width, height);
+
+    // Cực quang xanh ngọc & tím uốn lượn huyền ảo (Aurora Ribbons)
+    auroraWave += 0.015;
+    sCtx.save();
+    for (let a = 0; a < 3; a++) {
+      const aGrad = sCtx.createLinearGradient(0, height * 0.1, 0, height * 0.65);
+      if (a === 0) {
+        aGrad.addColorStop(0, 'rgba(52, 211, 153, 0)');
+        aGrad.addColorStop(0.5, 'rgba(52, 211, 153, 0.45)');
+        aGrad.addColorStop(1, 'rgba(52, 211, 153, 0)');
+      } else if (a === 1) {
+        aGrad.addColorStop(0, 'rgba(56, 189, 248, 0)');
+        aGrad.addColorStop(0.5, 'rgba(56, 189, 248, 0.4)');
+        aGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      } else {
+        aGrad.addColorStop(0, 'rgba(192, 132, 252, 0)');
+        aGrad.addColorStop(0.5, 'rgba(192, 132, 252, 0.35)');
+        aGrad.addColorStop(1, 'rgba(192, 132, 252, 0)');
+      }
+
+      sCtx.fillStyle = aGrad;
+      sCtx.beginPath();
+      sCtx.moveTo(0, height * 0.2);
+      for (let x = 0; x <= width; x += 30) {
+        const y = height * (0.28 + a * 0.08) + Math.sin(x * 0.005 + auroraWave + a) * 55;
+        sCtx.lineTo(x, y);
+      }
+      sCtx.lineTo(width, height * 0.7);
+      sCtx.lineTo(0, height * 0.7);
+      sCtx.closePath();
+      sCtx.fill();
+    }
+    sCtx.restore();
+  }
+
+  /* ==========================================================================
+     SCENE 5: SÔNG HOA ANH ĐÀO (SAKURA RIVER)
+     ========================================================================== */
+  function drawSceneSakuraRiver() {
+    const sky = sCtx.createLinearGradient(0, 0, 0, height * 0.6);
+    sky.addColorStop(0, '#F43F5E');
+    sky.addColorStop(0.4, '#FB7185');
+    sky.addColorStop(0.8, '#FDA4AF');
+    sky.addColorStop(1, '#FFE4E6');
+    sCtx.fillStyle = sky;
+    sCtx.fillRect(0, 0, width, height * 0.6);
+
+    const horizonY = height * 0.5;
+
+    // Dòng sông phản chiếu sắc hồng pha lê
+    const river = sCtx.createLinearGradient(0, horizonY, 0, height);
+    river.addColorStop(0, '#881337');
+    river.addColorStop(0.4, '#BE123C');
+    river.addColorStop(1, '#4C0519');
+    sCtx.fillStyle = river;
+    sCtx.fillRect(0, horizonY, width, height - horizonY);
+
+    // Gợn sóng hoa
+    waveTime += 0.03;
+    sCtx.save();
+    sCtx.strokeStyle = 'rgba(255, 228, 230, 0.5)';
+    sCtx.lineWidth = 1.8;
+    for (let wy = horizonY + 10; wy < height; wy += 14) {
+      sCtx.beginPath();
+      sCtx.moveTo(0, wy);
+      sCtx.bezierCurveTo(
+        width * 0.35, wy + Math.sin(waveTime + wy) * 5,
+        width * 0.65, wy - Math.cos(waveTime + wy) * 5,
+        width, wy
+      );
+      sCtx.stroke();
+    }
+    sCtx.restore();
+  }
+
+  /* ==========================================================================
+     SCENE 6: BIỂN XANH NGỌC BÍCH (SUMMER BLUE)
+     ========================================================================== */
+  function drawSceneSummerBlue() {
+    const sky = sCtx.createLinearGradient(0, 0, 0, height * 0.65);
+    sky.addColorStop(0, '#0284C7');
+    sky.addColorStop(0.5, '#38BDF8');
+    sky.addColorStop(1, '#E0F2FE');
+    sCtx.fillStyle = sky;
+    sCtx.fillRect(0, 0, width, height);
+
+    const horizonY = height * 0.48;
+    const ocean = sCtx.createLinearGradient(0, horizonY, 0, height);
+    ocean.addColorStop(0, '#0F766E');
+    ocean.addColorStop(0.3, '#14B8A6');
+    ocean.addColorStop(0.8, '#2DD4BF');
+    ocean.addColorStop(1, '#0D9488');
+    sCtx.fillStyle = ocean;
+    sCtx.fillRect(0, horizonY, width, height - horizonY);
+  }
+
+  function drawForegroundRoses() {
+    sCtx.save();
+    const flowerY = height - 38;
+    // Lá cây xanh mướt bóng bẩy
+    sCtx.fillStyle = '#065F46';
+    for (let fx = -20; fx < width + 80; fx += 48) {
+      sCtx.beginPath();
+      sCtx.ellipse(fx, height - 8, 38, 48, 0, 0, Math.PI * 2);
+      sCtx.fill();
+    }
+
+    // Hoa hồng trắng nở rộ tinh khôi
+    sCtx.fillStyle = '#FFFFFF';
+    sCtx.shadowColor = 'rgba(255, 255, 255, 0.85)';
+    sCtx.shadowBlur = 8;
+    for (let fx = 12; fx < width + 80; fx += 62) {
+      const fy = flowerY - (fx % 42);
+      sCtx.beginPath();
+      sCtx.arc(fx, fy, 15, 0, Math.PI * 2);
+      sCtx.arc(fx - 9, fy + 4, 12, 0, Math.PI * 2);
+      sCtx.arc(fx + 9, fy + 4, 12, 0, Math.PI * 2);
+      sCtx.fill();
+
+      // Nhuỵ vàng óng
+      sCtx.fillStyle = '#FEF08A';
+      sCtx.beginPath();
+      sCtx.arc(fx, fy + 2, 4.5, 0, Math.PI * 2);
+      sCtx.fill();
+      sCtx.fillStyle = '#FFFFFF';
+    }
+    sCtx.restore();
+  }
+
+  /* ==========================================================================
+     PARTICLE FX RENDERER (PETALS, FIREFLIES, SUNBEAMS, METEORS)
+     ========================================================================== */
+  function renderDynamicFx() {
+    fCtx.clearRect(0, 0, width, height);
+
+    // Mouse parallax easing
+    mouseX += (targetMouseX - mouseX) * 0.05;
+    mouseY += (targetMouseY - mouseY) * 0.05;
+
+    // 1. TIA NẮNG CHIẾU (SUNBEAMS / GOD RAYS)
+    if (fxEnabled.godrays && (currentTheme === 'anime-train' || currentTheme === 'highlands-waterfall' || currentTheme === 'summer-blue')) {
+      sunRayTime += 0.01;
+      fCtx.save();
+      for (let r = 0; r < 4; r++) {
+        const rayGrad = fCtx.createLinearGradient(0, 0, width * 0.8, height);
+        rayGrad.addColorStop(0, `rgba(255, 255, 255, ${0.15 + Math.sin(sunRayTime + r) * 0.05})`);
+        rayGrad.addColorStop(0.7, 'rgba(255, 255, 255, 0.03)');
+        rayGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        fCtx.fillStyle = rayGrad;
+        fCtx.beginPath();
+        fCtx.moveTo(width * 0.2 + r * 90, 0);
+        fCtx.lineTo(width * 0.35 + r * 140, 0);
+        fCtx.lineTo(width * 0.9, height);
+        fCtx.lineTo(width * 0.6, height);
+        fCtx.closePath();
+        fCtx.fill();
+      }
+      fCtx.restore();
+    }
+
+    // 2. CÁNH HOA RƠI (PETALS)
+    if (fxEnabled.petals) {
+      for (let i = 0; i < petals.length; i++) {
+        const p = petals[i];
+        p.y += p.speedY;
+        p.x += p.speedX + Math.sin(p.angle) * 0.5 + ((mouseX - width / 2) * 0.0008);
+        p.angle += p.rotationSpeed;
+
+        if (p.y > height + 25) {
+          p.y = -25;
+          p.x = Math.random() * width;
+        }
+        if (p.x > width + 25) {
+          p.x = -25;
+        }
+
+        fCtx.save();
+        fCtx.translate(p.x, p.y);
+        fCtx.rotate(p.angle);
+        
+        if (currentTheme === 'sakura-river' || p.colorType === 'pink') {
+          fCtx.fillStyle = `rgba(255, 182, 193, ${p.opacity})`;
+        } else {
+          fCtx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        }
+        fCtx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+        fCtx.shadowBlur = 5;
+
+        fCtx.beginPath();
+        fCtx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
+        fCtx.fill();
+        fCtx.restore();
+      }
+    }
+
+    // 3. ĐỐM SÁNG THẦN TIÊN & ĐOM ĐÓM (FIREFLIES)
+    if (fxEnabled.fireflies) {
+      for (let i = 0; i < fireflies.length; i++) {
+        const f = fireflies[i];
+        f.alphaPhase += f.alphaSpeed;
+        const currentAlpha = Math.max(0.1, f.baseAlpha + Math.sin(f.alphaPhase) * 0.3);
+        f.x += f.speedX;
+        f.y += f.speedY;
+
+        if (f.x < 0) f.x = width;
+        if (f.x > width) f.x = 0;
+        if (f.y < 0) f.y = height;
+        if (f.y > height) f.y = 0;
+
+        fCtx.save();
+        fCtx.fillStyle = f.color;
+        fCtx.globalAlpha = currentAlpha;
+        fCtx.shadowColor = f.color;
+        fCtx.shadowBlur = 10;
+        fCtx.beginPath();
+        fCtx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+        fCtx.fill();
+        fCtx.restore();
+      }
+    }
+
+    // 4. SAO BĂNG (METEORS)
+    spawnMeteor();
+    if (fxEnabled.meteors) {
+      for (let m = meteors.length - 1; m >= 0; m--) {
+        const met = meteors[m];
+        met.x -= Math.cos(met.angle) * met.speed;
+        met.y += Math.sin(met.angle) * met.speed;
+        met.opacity -= 0.02;
+
+        if (met.opacity <= 0 || met.x < -100 || met.y > height + 100) {
+          meteors.splice(m, 1);
+          continue;
+        }
+
+        fCtx.save();
+        const metGrad = fCtx.createLinearGradient(
+          met.x, met.y,
+          met.x + Math.cos(met.angle) * met.length,
+          met.y - Math.sin(met.angle) * met.length
+        );
+        metGrad.addColorStop(0, `rgba(255, 255, 255, ${met.opacity})`);
+        metGrad.addColorStop(0.3, `rgba(147, 197, 253, ${met.opacity * 0.8})`);
+        metGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        fCtx.strokeStyle = metGrad;
+        fCtx.lineWidth = 2.5;
+        fCtx.beginPath();
+        fCtx.moveTo(met.x, met.y);
+        fCtx.lineTo(
+          met.x + Math.cos(met.angle) * met.length,
+          met.y - Math.sin(met.angle) * met.length
+        );
+        fCtx.stroke();
+        fCtx.restore();
+      }
+    }
+  }
+
+  function masterRenderLoop() {
+    if (!bgVideo.classList.contains('active')) {
+      sCtx.clearRect(0, 0, width, height);
+      switch(currentTheme) {
+        case 'anime-train': drawSceneAnimeTrain(); break;
+        case 'highlands-waterfall': drawSceneHighlands(); break;
+        case 'sunset': drawSceneSunset(); break;
+        case 'aurora-stars': drawSceneAurora(); break;
+        case 'sakura-river': drawSceneSakuraRiver(); break;
+        case 'summer-blue': drawSceneSummerBlue(); break;
+        default: drawSceneAnimeTrain();
+      }
+    } else {
+      sCtx.clearRect(0, 0, width, height);
+    }
+
+    renderDynamicFx();
+    requestAnimationFrame(masterRenderLoop);
+  }
+  masterRenderLoop();
+
+  /* ==========================================================================
+     BACKGROUND CONTROLS & THEMES MODAL
+     ========================================================================== */
+  openBgPickerBtn.addEventListener('click', () => {
+    bgModalBackdrop.classList.add('visible');
+  });
+
+  closeBgModalBtn.addEventListener('click', () => {
+    bgModalBackdrop.classList.remove('visible');
+  });
+
+  bgModalBackdrop.addEventListener('click', (e) => {
+    if (e.target === bgModalBackdrop) bgModalBackdrop.classList.remove('visible');
+  });
+
+  function setTheme(newTheme) {
+    currentTheme = newTheme;
+    themeCardBtns.forEach(btn => {
+      if (btn.getAttribute('data-theme') === newTheme) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    // Tắt video nếu chuyển sang canvas sống động
+    bgVideo.pause();
+    bgVideo.classList.remove('active');
+  }
+
+  themeCardBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const theme = btn.getAttribute('data-theme');
+      setTheme(theme);
+      bgModalBackdrop.classList.remove('visible');
+    });
+  });
+
+  // Chuyển nhanh qua nút vòng tròn trên thanh toolbar
+  quickSceneSwitchBtn.addEventListener('click', () => {
+    const currentIndex = SCENES_LIST.indexOf(currentTheme);
+    const nextIndex = (currentIndex + 1) % SCENES_LIST.length;
+    setTheme(SCENES_LIST[nextIndex]);
+  });
+
+  // Tùy chỉnh FX Toggles
+  function setupFxToggle(btn, fxKey) {
+    btn.addEventListener('click', () => {
+      fxEnabled[fxKey] = !fxEnabled[fxKey];
+      btn.classList.toggle('active', fxEnabled[fxKey]);
+    });
+  }
+  setupFxToggle(togglePetalsFx, 'petals');
+  setupFxToggle(toggleFirefliesFx, 'fireflies');
+  setupFxToggle(toggleGodraysFx, 'godrays');
+  setupFxToggle(toggleMeteorsFx, 'meteors');
+
+  // Xử lý tệp video cá nhân
+  videoFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      bgVideo.src = fileUrl;
+      bgVideo.play().then(() => {
+        bgVideo.classList.add('active');
+        bgModalBackdrop.classList.remove('visible');
+      }).catch(err => {
+        console.log("Autoplay error:", err);
+      });
+    }
+  });
+
+  /* ==========================================================================
+     AMBIENT NATURE SOUND SYNTHESIZER (WEB AUDIO API)
+     ========================================================================== */
+  function playAmbientSeaSound() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+
+    const bufferSize = audioContext.sampleRate * 4;
+    const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0;
+
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99 * b0 + white * 0.05;
+      b1 = 0.98 * b1 + white * 0.07;
+      b2 = 0.95 * b2 + white * 0.1;
+      output[i] = (b0 + b1 + b2) * 0.2;
+    }
+
+    const whiteNoise = audioContext.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+    whiteNoise.loop = true;
+
+    const filter = audioContext.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(350, audioContext.currentTime);
+
+    const gainNode = audioContext.createGain();
+    gainNode.gain.setValueAtTime(0.22, audioContext.currentTime);
+
+    whiteNoise.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    whiteNoise.start(0);
+
+    // Chu kỳ sóng vỗ êm đềm
+    setInterval(() => {
+      if (isAudioPlaying && audioContext) {
+        const t = audioContext.currentTime;
+        filter.frequency.exponentialRampToValueAtTime(850, t + 2.5);
+        filter.frequency.exponentialRampToValueAtTime(260, t + 5);
+      }
+    }, 5200);
+  }
+
+  toggleAudioBtn.addEventListener('click', () => {
+    isAudioPlaying = !isAudioPlaying;
+    toggleAudioBtn.classList.toggle('active', isAudioPlaying);
+    if (isAudioPlaying) {
+      playAmbientSeaSound();
+      audioIconOff.style.display = 'none';
+      audioIconOn.style.display = 'block';
+    } else {
+      if (audioContext) audioContext.suspend();
+      audioIconOff.style.display = 'block';
+      audioIconOn.style.display = 'none';
+    }
+  });
+
+  /* ==========================================================================
+     FORM VALIDATION & LOGIC
+     ========================================================================== */
+  function normalizeFullName(raw) {
+    if (!raw) return '';
+    return raw
+      .trim()
+      .replace(/\s+/g, ' ')
+      .split(' ')
+      .map(w => w ? (w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()) : '')
+      .join(' ');
+  }
+
+  function normalizeMSSV(raw) {
+    if (!raw) return '';
+    return raw.replace(/\s+/g, '').trim();
+  }
+
+  function showErr(inputEl, container, textEl, msg) {
+    inputEl.setAttribute('aria-invalid', 'true');
+    textEl.textContent = msg;
+    container.classList.add('visible');
+  }
+
+  function clearErr(inputEl, container, textEl) {
+    inputEl.setAttribute('aria-invalid', 'false');
+    textEl.textContent = '';
+    container.classList.remove('visible');
+  }
+
+  function validateMSSV() {
+    const clean = normalizeMSSV(mssvInput.value);
+    mssvInput.value = clean;
+
+    if (!clean) {
+      showErr(mssvInput, mssvErrorAlert, mssvErrorText, "Vui lòng nhập Mã số sinh viên của bạn");
+      return false;
+    }
+    if (!/^\d+$/.test(clean)) {
+      showErr(mssvInput, mssvErrorAlert, mssvErrorText, "MSSV chỉ gồm chữ số, bạn kiểm tra lại giúp nhé");
+      return false;
+    }
+    if (clean.length < 8 || clean.length > 10) {
+      showErr(mssvInput, mssvErrorAlert, mssvErrorText, "MSSV phải có độ dài từ 8 đến 10 chữ số");
+      return false;
+    }
+    clearErr(mssvInput, mssvErrorAlert, mssvErrorText);
+    return true;
+  }
+
+  function validateName() {
+    const clean = normalizeFullName(fullNameInput.value);
+    fullNameInput.value = clean;
+
+    if (!clean) {
+      showErr(fullNameInput, fullNameErrorAlert, fullNameErrorText, "Vui lòng nhập Họ và tên của bạn");
+      return false;
+    }
+    if (clean.length < 2 || clean.length > 60) {
+      showErr(fullNameInput, fullNameErrorAlert, fullNameErrorText, "Họ và tên phải từ 2 đến 60 ký tự");
+      return false;
+    }
+
+    const vnRegex = /^[a-zA-ZàáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệđìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆĐÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴ\s]+$/u;
+    if (!vnRegex.test(clean)) {
+      showErr(fullNameInput, fullNameErrorAlert, fullNameErrorText, "Họ và tên chỉ gồm chữ cái tiếng Việt, không chứa số hay ký tự lạ");
+      return false;
+    }
+
+    const words = clean.split(' ').filter(Boolean);
+    if (words.length < 2) {
+      showErr(fullNameInput, fullNameErrorAlert, fullNameErrorText, "Vui lòng nhập đầy đủ cả Họ và Tên (ít nhất 2 từ)");
+      return false;
+    }
+
+    clearErr(fullNameInput, fullNameErrorAlert, fullNameErrorText);
+    return true;
+  }
+
+  // Live input formatting
+  mssvInput.addEventListener('input', () => {
+    let val = mssvInput.value.replace(/\D/g, '');
+    if (val.length > 10) val = val.slice(0, 10);
+    mssvInput.value = val;
+    clearMssv.classList.toggle('active', val.length > 0);
+
+    if (val.length > 0) {
+      digitBadge.textContent = `${val.length}/10 số`;
+      if (val.length >= 8 && val.length <= 10) {
+        digitBadge.style.color = '#16A34A';
+        clearErr(mssvInput, mssvErrorAlert, mssvErrorText);
+      } else {
+        digitBadge.style.color = '#E11D48';
+      }
+    } else {
+      digitBadge.textContent = '8–10 số';
+      digitBadge.style.color = 'var(--text-muted)';
+    }
+  });
+
+  fullNameInput.addEventListener('input', () => {
+    clearName.classList.toggle('active', fullNameInput.value.trim().length > 0);
+    if (fullNameErrorAlert.classList.contains('visible')) {
+      clearErr(fullNameInput, fullNameErrorAlert, fullNameErrorText);
+    }
+  });
+
+  mssvInput.addEventListener('blur', validateMSSV);
+  fullNameInput.addEventListener('blur', validateName);
+
+  clearMssv.addEventListener('click', () => {
+    mssvInput.value = '';
+    clearMssv.classList.remove('active');
+    digitBadge.textContent = '8–10 số';
+    digitBadge.style.color = 'var(--text-muted)';
+    clearErr(mssvInput, mssvErrorAlert, mssvErrorText);
+    mssvInput.focus();
+  });
+
+  clearName.addEventListener('click', () => {
+    fullNameInput.value = '';
+    clearName.classList.remove('active');
+    clearErr(fullNameInput, fullNameErrorAlert, fullNameErrorText);
+    fullNameInput.focus();
+  });
+
+  // Xử lý gửi biểu mẫu
+  mainCheckinForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    duplicateBanner.classList.remove('visible');
+    const isMssvValid = validateMSSV();
+    const isNameValid = validateName();
+
+    if (!isMssvValid || !isNameValid) {
+      if (!isMssvValid) mssvInput.focus();
+      else fullNameInput.focus();
+      return;
+    }
+
+    const cleanMssv = normalizeMSSV(mssvInput.value);
+    const cleanName = normalizeFullName(fullNameInput.value);
+
+    // Kiểm tra gửi trùng
+    if (sessionRecords.has(cleanMssv)) {
+      duplicateBannerMsg.textContent = `Mã số sinh viên ${cleanMssv} đã được gửi thành công trong phiên này!`;
+      duplicateBanner.classList.add('visible');
+      mssvInput.focus();
+      return;
+    }
+
+    isSubmitting = true;
+    submitBtn.disabled = true;
+    submitBtn.classList.add('loading');
+    btnText.textContent = "Đang lưu thông tin...";
+
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} • ${now.toLocaleDateString('vi-VN')}`;
+    const code = '#TN-' + Math.floor(10000 + Math.random() * 90000);
+
+    const record = {
+      id: Date.now().toString(),
+      mssv: cleanMssv,
+      fullName: cleanName,
+      code,
+      timestamp: now.toISOString(),
+      displayTime: timeStr,
+      event: TEN_BIEU_MAU,
+      unit: DON_VI
+    };
+
+    try {
+      const records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      records.unshift(record);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      sessionRecords.add(cleanMssv);
+    } catch (err) {
+      console.warn("Storage warning:", err);
+    }
+
+    // Cập nhật số đếm dữ liệu trên thanh công cụ
+    updateDataCounters();
+
+    // Hiệu ứng mượt mà
+    await new Promise(r => setTimeout(r, 450));
+
+    // Hiển thị vé điện tử
+    ticketCode.textContent = code;
+    resMssv.textContent = cleanMssv;
+    resName.textContent = cleanName;
+    resTime.textContent = timeStr;
+    barcodeLabel.textContent = `TN-${cleanMssv}-MEMBER`;
+
+    formViewBox.style.display = 'none';
+    successViewBox.classList.add('visible');
+
+    isSubmitting = false;
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('loading');
+    btnText.textContent = "Xác nhận gửi thông tin";
+  });
+
+  resetBtn.addEventListener('click', () => {
+    mainCheckinForm.reset();
+    clearMssv.classList.remove('active');
+    clearName.classList.remove('active');
+    digitBadge.textContent = '8–10 số';
+    digitBadge.style.color = 'var(--text-muted)';
+    clearErr(mssvInput, mssvErrorAlert, mssvErrorText);
+    clearErr(fullNameInput, fullNameErrorAlert, fullNameErrorText);
+    duplicateBanner.classList.remove('visible');
+
+    successViewBox.classList.remove('visible');
+    formViewBox.style.display = 'block';
+    mssvInput.focus();
+  });
+
+  /* ==========================================================================
+     MEMBERS DATA FULL-PAGE DASHBOARD & COMPLETE CRUD LOGIC
+     ========================================================================== */
+  const formCard = document.getElementById('formCard');
+  const dataDashboardPage = document.getElementById('dataDashboardPage');
+  const openDataViewerBtn = document.getElementById('openDataViewerBtn');
+  const backToFormBtn = document.getElementById('backToFormBtn');
+  const emptyToFormBtn = document.getElementById('emptyToFormBtn');
+  const emptyAddBtn = document.getElementById('emptyAddBtn');
+  const viewAllDataFromSuccessBtn = document.getElementById('viewAllDataFromSuccessBtn');
+  const dataCountBadge = document.getElementById('dataCountBadge');
+  const dashboardTotalCount = document.getElementById('dashboardTotalCount');
+  const dashboardLatestName = document.getElementById('dashboardLatestName');
+  const dataRowCountLabel = document.getElementById('dataRowCountLabel');
+  const dataSearchInput = document.getElementById('dataSearchInput');
+  const dataTableBody = document.getElementById('dataTableBody');
+  const dataEmptyBox = document.getElementById('dataEmptyBox');
+  const membersDataTable = document.getElementById('membersDataTable');
+  const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+  const addNewMemberBtn = document.getElementById('addNewMemberBtn');
+  const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+  const bulkDeleteCountText = document.getElementById('bulkDeleteCountText');
+  const copyTableToExcelBtn = document.getElementById('copyTableToExcelBtn');
+  const exportExcelBtn = document.getElementById('exportExcelBtn');
+  const exportJsonBtn = document.getElementById('exportJsonBtn');
+  const copyJsonBtn = document.getElementById('copyJsonBtn');
+  const clearAllTableDataBtn = document.getElementById('clearAllTableDataBtn');
+  const toastMsg = document.getElementById('toastMsg');
+
+  // Modals elements
+  const memberFormModalBackdrop = document.getElementById('memberFormModalBackdrop');
+  const memberFormModalTitle = document.getElementById('memberFormModalTitle');
+  const closeMemberFormModalBtn = document.getElementById('closeMemberFormModalBtn');
+  const cancelMemberFormBtn = document.getElementById('cancelMemberFormBtn');
+  const memberCrudForm = document.getElementById('memberCrudForm');
+  const crudMemberId = document.getElementById('crudMemberId');
+  const crudMssvInput = document.getElementById('crudMssvInput');
+  const crudNameInput = document.getElementById('crudNameInput');
+  const crudCodeInput = document.getElementById('crudCodeInput');
+  const crudUnitInput = document.getElementById('crudUnitInput');
+
+  const confirmDeleteModalBackdrop = document.getElementById('confirmDeleteModalBackdrop');
+  const confirmDeleteMsg = document.getElementById('confirmDeleteMsg');
+  const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+  const executeDeleteBtn = document.getElementById('executeDeleteBtn');
+
+  const confirmClearModalBackdrop = document.getElementById('confirmClearModalBackdrop');
+  const confirmClearTitle = document.getElementById('confirmClearTitle');
+  const confirmClearMsg = document.getElementById('confirmClearMsg');
+  const cancelClearBtn = document.getElementById('cancelClearBtn');
+  const executeClearBtn = document.getElementById('executeClearBtn');
+
+  let toastTimer = null;
+  function showToast(text) {
+    if (!toastMsg) return;
+    toastMsg.textContent = text;
+    toastMsg.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toastMsg.classList.remove('show');
+    }, 3200);
+  }
+
+  function getSavedRecords() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveRecords(records) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  }
+
+  // Selected item IDs for bulk operations
+  let selectedMemberIds = new Set();
+  let pendingDeleteTarget = null; // Can be single ID or 'bulk' or 'all'
+
+  function updateBulkDeleteUI() {
+    const count = selectedMemberIds.size;
+    if (bulkDeleteBtn) {
+      if (count > 0) {
+        bulkDeleteBtn.style.display = 'inline-flex';
+        if (bulkDeleteCountText) bulkDeleteCountText.textContent = `Xóa (${count}) đã chọn`;
+      } else {
+        bulkDeleteBtn.style.display = 'none';
+      }
+    }
+  }
+
+  function updateDataCounters() {
+    const records = getSavedRecords();
+    const count = records.length;
+    
+    if (dataCountBadge) dataCountBadge.textContent = count;
+    if (dashboardTotalCount) dashboardTotalCount.textContent = count;
+    if (adminCount) adminCount.textContent = count;
+
+    if (dashboardLatestName) {
+      if (records.length > 0) {
+        const latest = records[records.length - 1];
+        dashboardLatestName.textContent = `${latest.fullName || '---'} (${latest.mssv || '---'})`;
+        dashboardLatestName.title = `${latest.fullName} - ${latest.displayTime || ''}`;
+      } else {
+        dashboardLatestName.textContent = "Chưa có";
+        dashboardLatestName.title = "";
+      }
+    }
+  }
+
+  function renderDataTable(filterQuery = '') {
+    const records = getSavedRecords();
+    const query = (filterQuery || '').trim().toLowerCase();
+
+    const filtered = records.filter(r => {
+      if (!query) return true;
+      const mssv = (r.mssv || '').toLowerCase();
+      const name = (r.fullName || '').toLowerCase();
+      const code = (r.code || '').toLowerCase();
+      const unit = (r.unit || '').toLowerCase();
+      return mssv.includes(query) || name.includes(query) || code.includes(query) || unit.includes(query);
+    });
+
+    dataTableBody.innerHTML = '';
+
+    // Update select all checkbox state
+    if (selectAllCheckbox) {
+      if (filtered.length > 0 && filtered.every(r => selectedMemberIds.has(r.id || r.mssv))) {
+        selectAllCheckbox.checked = true;
+        selectAllCheckbox.indeterminate = false;
+      } else if (filtered.some(r => selectedMemberIds.has(r.id || r.mssv))) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = true;
+      } else {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+      }
+    }
+
+    if (!filtered.length) {
+      membersDataTable.style.display = 'none';
+      dataEmptyBox.style.display = 'block';
+      const emptyTitle = dataEmptyBox.querySelector('div:first-of-type');
+      if (emptyTitle) {
+        if (query) {
+          emptyTitle.textContent = `Không tìm thấy kết quả phù hợp với "${query}"`;
+        } else {
+          emptyTitle.textContent = 'Chưa có dữ liệu thành viên';
+        }
+      }
+      if (dataRowCountLabel) dataRowCountLabel.textContent = `Hiển thị 0 / ${records.length} thành viên`;
+      updateBulkDeleteUI();
+      return;
+    }
+
+    membersDataTable.style.display = 'table';
+    dataEmptyBox.style.display = 'none';
+    if (dataRowCountLabel) dataRowCountLabel.textContent = `Hiển thị ${filtered.length} / ${records.length} thành viên`;
+
+    // Render từng dòng
+    filtered.forEach((r, idx) => {
+      const recId = r.id || r.mssv;
+      const isChecked = selectedMemberIds.has(recId);
+      const tr = document.createElement('tr');
+      if (isChecked) tr.classList.add('selected-row');
+
+      tr.innerHTML = `
+        <td style="text-align: center;">
+          <input type="checkbox" class="custom-table-checkbox row-select-box" data-id="${recId}" ${isChecked ? 'checked' : ''}>
+        </td>
+        <td style="text-align: center; color: #64748B; font-weight: 700;">${idx + 1}</td>
+        <td>
+          <span style="font-family: monospace; font-weight: 800; color: var(--primary); font-size: 13.5px; background: #EFF6FF; padding: 3px 8px; border-radius: 5px; border: 1px solid #DBEAFE;">${r.mssv || '---'}</span>
+        </td>
+        <td>
+          <div style="font-weight: 700; color: #0F172A; font-size: 14px;">${r.fullName || '---'}</div>
+        </td>
+        <td>
+          <span style="font-size: 12px; font-family: monospace; background: #F1F5F9; padding: 3px 7px; border-radius: 4px; color: #475569; border: 1px solid #E2E8F0; font-weight: 600;">${r.code || '---'}</span>
+        </td>
+        <td style="font-size: 12px; color: #64748B;">${r.displayTime || r.time || '---'}</td>
+        <td style="font-size: 12px; color: #475569;">${r.unit || DON_VI}</td>
+        <td style="text-align: center;">
+          <div class="row-actions-group">
+            <button type="button" class="btn-row-edit" title="Chỉnh sửa thông tin thành viên" data-id="${recId}">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              <span>Sửa</span>
+            </button>
+            <button type="button" class="btn-row-delete" title="Xoá thành viên này" data-id="${recId}">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              <span>Xoá</span>
+            </button>
+          </div>
+        </td>
+      `;
+
+      // Checkbox event
+      const chk = tr.querySelector('.row-select-box');
+      chk.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          selectedMemberIds.add(recId);
+          tr.classList.add('selected-row');
+        } else {
+          selectedMemberIds.delete(recId);
+          tr.classList.remove('selected-row');
+        }
+        updateBulkDeleteUI();
+        if (selectAllCheckbox) {
+          const allBoxes = Array.from(dataTableBody.querySelectorAll('.row-select-box'));
+          selectAllCheckbox.checked = allBoxes.length > 0 && allBoxes.every(b => b.checked);
+          selectAllCheckbox.indeterminate = !selectAllCheckbox.checked && allBoxes.some(b => b.checked);
+        }
+      });
+
+      // Edit event (Yêu cầu quyền Admin)
+      const editBtn = tr.querySelector('.btn-row-edit');
+      editBtn.addEventListener('click', () => {
+        requireAdminAuth(() => openEditMemberModal(r));
+      });
+
+      // Delete event (Yêu cầu quyền Admin)
+      const delBtn = tr.querySelector('.btn-row-delete');
+      delBtn.addEventListener('click', () => {
+        requireAdminAuth(() => openDeleteConfirmModal(r));
+      });
+
+      dataTableBody.appendChild(tr);
+    });
+
+    updateBulkDeleteUI();
+  }
+
+  // Select all checkbox handler
+  if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener('change', (e) => {
+      const records = getSavedRecords();
+      const query = (dataSearchInput ? dataSearchInput.value : '').trim().toLowerCase();
+      const filtered = records.filter(r => {
+        if (!query) return true;
+        const mssv = (r.mssv || '').toLowerCase();
+        const name = (r.fullName || '').toLowerCase();
+        const code = (r.code || '').toLowerCase();
+        const unit = (r.unit || '').toLowerCase();
+        return mssv.includes(query) || name.includes(query) || code.includes(query) || unit.includes(query);
+      });
+
+      if (e.target.checked) {
+        filtered.forEach(r => selectedMemberIds.add(r.id || r.mssv));
+      } else {
+        filtered.forEach(r => selectedMemberIds.delete(r.id || r.mssv));
+      }
+      renderDataTable(dataSearchInput ? dataSearchInput.value : '');
+    });
+  }
+
+  /* ==========================================================================
+     ADMIN AUTHENTICATION LOGIC (MẬT KHẨU: minhzxc@301)
+     ========================================================================== */
+  const ADMIN_PASSWORD = "minhzxc@301";
+  let isAdminAuthenticated = false;
+  let pendingAdminAction = null;
+
+  const adminAuthModalBackdrop = document.getElementById('adminAuthModalBackdrop');
+  const adminAuthForm = document.getElementById('adminAuthForm');
+  const adminPasswordInput = document.getElementById('adminPasswordInput');
+  const adminAuthError = document.getElementById('adminAuthError');
+  const closeAdminAuthModalBtn = document.getElementById('closeAdminAuthModalBtn');
+  const cancelAdminAuthBtn = document.getElementById('cancelAdminAuthBtn');
+
+  function closeAdminAuthModal() {
+    if (adminAuthModalBackdrop) adminAuthModalBackdrop.classList.remove('visible');
+    pendingAdminAction = null;
+    if (adminPasswordInput) adminPasswordInput.value = '';
+    if (adminAuthError) adminAuthError.style.display = 'none';
+  }
+
+  function requireAdminAuth(actionCallback) {
+    if (isAdminAuthenticated) {
+      actionCallback();
+      return;
+    }
+    pendingAdminAction = actionCallback;
+    if (adminPasswordInput) adminPasswordInput.value = '';
+    if (adminAuthError) adminAuthError.style.display = 'none';
+    if (adminAuthModalBackdrop) adminAuthModalBackdrop.classList.add('visible');
+    setTimeout(() => {
+      if (adminPasswordInput) adminPasswordInput.focus();
+    }, 150);
+  }
+
+  if (adminAuthForm) {
+    adminAuthForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const entered = (adminPasswordInput ? adminPasswordInput.value : '').trim();
+      if (entered === ADMIN_PASSWORD) {
+        isAdminAuthenticated = true;
+        closeAdminAuthModal();
+        showToast("✓ Đã xác thực Quản trị viên thành công!");
+        if (typeof pendingAdminAction === 'function') {
+          const action = pendingAdminAction;
+          pendingAdminAction = null;
+          action();
+        }
+      } else {
+        if (adminAuthError) {
+          adminAuthError.style.display = 'block';
+          adminAuthError.textContent = "Mật khẩu quản trị viên không chính xác! Vui lòng thử lại.";
+        }
+        if (adminPasswordInput) {
+          adminPasswordInput.select();
+          adminPasswordInput.focus();
+        }
+      }
+    });
+  }
+
+  if (closeAdminAuthModalBtn) closeAdminAuthModalBtn.addEventListener('click', closeAdminAuthModal);
+  if (cancelAdminAuthBtn) cancelAdminAuthBtn.addEventListener('click', closeAdminAuthModal);
+  if (adminAuthModalBackdrop) {
+    adminAuthModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === adminAuthModalBackdrop) closeAdminAuthModal();
+    });
+  }
+
+  /* ==========================================================================
+     CRUD MODAL LOGIC (ADD, EDIT, DELETE)
+     ========================================================================== */
+
+  // Mở modal thêm thành viên mới
+  function openAddMemberModal() {
+    if (!memberFormModalBackdrop) return;
+    crudMemberId.value = '';
+    crudMssvInput.value = '';
+    crudNameInput.value = '';
+    crudCodeInput.value = `#TN-${Math.floor(1000 + Math.random() * 9000)}`;
+    crudUnitInput.value = DON_VI;
+    if (memberFormModalTitle) memberFormModalTitle.textContent = "Thêm thành viên mới";
+    memberFormModalBackdrop.classList.add('visible');
+    setTimeout(() => crudMssvInput.focus(), 150);
+  }
+
+  // Mở modal sửa thành viên
+  function openEditMemberModal(record) {
+    if (!memberFormModalBackdrop) return;
+    crudMemberId.value = record.id || record.mssv;
+    crudMssvInput.value = record.mssv || '';
+    crudNameInput.value = record.fullName || '';
+    crudCodeInput.value = record.code || '';
+    crudUnitInput.value = record.unit || DON_VI;
+    if (memberFormModalTitle) memberFormModalTitle.textContent = `Chỉnh sửa: ${record.fullName || record.mssv}`;
+    memberFormModalBackdrop.classList.add('visible');
+    setTimeout(() => crudNameInput.focus(), 150);
+  }
+
+  function closeMemberFormModal() {
+    if (memberFormModalBackdrop) memberFormModalBackdrop.classList.remove('visible');
+  }
+
+  if (addNewMemberBtn) {
+    addNewMemberBtn.addEventListener('click', () => requireAdminAuth(openAddMemberModal));
+  }
+  if (emptyAddBtn) {
+    emptyAddBtn.addEventListener('click', () => requireAdminAuth(openAddMemberModal));
+  }
+  if (closeMemberFormModalBtn) closeMemberFormModalBtn.addEventListener('click', closeMemberFormModal);
+  if (cancelMemberFormBtn) cancelMemberFormBtn.addEventListener('click', closeMemberFormModal);
+  if (memberFormModalBackdrop) {
+    memberFormModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === memberFormModalBackdrop) closeMemberFormModal();
+    });
+  }
+
+  // Xử lý lưu form Thêm / Sửa
+  if (memberCrudForm) {
+    memberCrudForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = crudMemberId.value.trim();
+      const mssv = crudMssvInput.value.trim().toUpperCase();
+      const fullName = crudNameInput.value.trim();
+      const code = crudCodeInput.value.trim();
+      const unit = crudUnitInput.value.trim() || DON_VI;
+
+      if (!mssv || !fullName || !code) {
+        alert("Vui lòng điền đầy đủ MSSV, Họ tên và Mã thẻ!");
+        return;
+      }
+
+      const records = getSavedRecords();
+      const nowStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' • ' + new Date().toLocaleDateString('vi-VN');
+
+      if (id) {
+        // Cập nhật bản ghi hiện có
+        let found = false;
+        const updated = records.map(item => {
+          const itemId = item.id || item.mssv;
+          if (itemId === id) {
+            found = true;
+            return {
+              ...item,
+              mssv,
+              fullName,
+              code,
+              unit,
+              lastModified: new Date().toISOString()
+            };
+          }
+          return item;
+        });
+
+        if (found) {
+          saveRecords(updated);
+          showToast(`✓ Đã cập nhật thông tin của ${fullName}`);
+        } else {
+          // Trường hợp không tìm thấy ID, thêm mới
+          const newRecord = {
+            id: id || Date.now().toString(),
+            mssv,
+            fullName,
+            code,
+            unit,
+            time: nowStr,
+            displayTime: nowStr,
+            timestamp: new Date().toISOString()
+          };
+          updated.push(newRecord);
+          saveRecords(updated);
+          showToast(`✓ Đã thêm thành viên ${fullName}`);
+        }
+      } else {
+        // Thêm bản ghi hoàn toàn mới
+        const newRecord = {
+          id: 'rec_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+          mssv,
+          fullName,
+          code,
+          unit,
+          time: nowStr,
+          displayTime: nowStr,
+          timestamp: new Date().toISOString()
+        };
+        records.push(newRecord);
+        saveRecords(records);
+        sessionRecords.set(mssv, newRecord);
+        showToast(`✓ Đã thêm thành viên ${fullName} thành công!`);
+      }
+
+      closeMemberFormModal();
+      updateDataCounters();
+      renderDataTable(dataSearchInput ? dataSearchInput.value : '');
+    });
+  }
+
+  // Xóa 1 thành viên đơn lẻ
+  function openDeleteConfirmModal(record) {
+    if (!confirmDeleteModalBackdrop) return;
+    pendingDeleteTarget = record;
+    if (confirmDeleteMsg) {
+      confirmDeleteMsg.innerHTML = `Bạn có chắc muốn xóa <b>${record.fullName || '---'}</b> (MSSV: <code>${record.mssv || '---'}</code>) khỏi danh sách?`;
+    }
+    confirmDeleteModalBackdrop.classList.add('visible');
+  }
+
+  function closeDeleteConfirmModal() {
+    if (confirmDeleteModalBackdrop) confirmDeleteModalBackdrop.classList.remove('visible');
+    pendingDeleteTarget = null;
+  }
+
+  if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteConfirmModal);
+  if (confirmDeleteModalBackdrop) {
+    confirmDeleteModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === confirmDeleteModalBackdrop) closeDeleteConfirmModal();
+    });
+  }
+
+  if (executeDeleteBtn) {
+    executeDeleteBtn.addEventListener('click', () => {
+      if (!pendingDeleteTarget) return;
+      const targetId = pendingDeleteTarget.id || pendingDeleteTarget.mssv;
+      const targetName = pendingDeleteTarget.fullName || pendingDeleteTarget.mssv;
+
+      const records = getSavedRecords();
+      const updated = records.filter(item => (item.id ? item.id !== targetId : item.mssv !== pendingDeleteTarget.mssv));
+      saveRecords(updated);
+      selectedMemberIds.delete(targetId);
+
+      if (pendingDeleteTarget.mssv) {
+        sessionRecords.delete(pendingDeleteTarget.mssv);
+      }
+
+      closeDeleteConfirmModal();
+      updateDataCounters();
+      renderDataTable(dataSearchInput ? dataSearchInput.value : '');
+      showToast(`✓ Đã xóa thành viên ${targetName}`);
+    });
+  }
+
+  // Xóa nhiều thành viên đã tích chọn (Bulk delete)
+  if (bulkDeleteBtn) {
+    bulkDeleteBtn.addEventListener('click', () => {
+      const count = selectedMemberIds.size;
+      if (count === 0) return;
+      
+      requireAdminAuth(() => {
+        pendingDeleteTarget = 'bulk';
+        if (confirmClearTitle) confirmClearTitle.textContent = `Xóa ${count} thành viên đã chọn?`;
+        if (confirmClearMsg) {
+          confirmClearMsg.innerHTML = `Bạn có chắc chắn muốn xóa vĩnh viễn <b>${count} thành viên</b> đã chọn khỏi danh sách dữ liệu?`;
+        }
+        confirmClearModalBackdrop.classList.add('visible');
+      });
+    });
+  }
+
+  // Xóa toàn bộ dữ liệu máy
+  if (clearAllTableDataBtn) {
+    clearAllTableDataBtn.addEventListener('click', () => {
+      const records = getSavedRecords();
+      if (!records.length) {
+        alert("Hiện tại danh sách đang trống.");
+        return;
+      }
+      requireAdminAuth(() => {
+        pendingDeleteTarget = 'all';
+        if (confirmClearTitle) confirmClearTitle.textContent = `Xóa toàn bộ ${records.length} thành viên?`;
+        if (confirmClearMsg) {
+          confirmClearMsg.innerHTML = `Thao tác này sẽ xóa sạch tất cả <b>${records.length} bản ghi</b> đã lưu trên máy này. Dữ liệu đã xuất ra Excel sẽ không bị ảnh hưởng.`;
+        }
+        confirmClearModalBackdrop.classList.add('visible');
+      });
+    });
+  }
+
+  function closeClearModal() {
+    if (confirmClearModalBackdrop) confirmClearModalBackdrop.classList.remove('visible');
+    pendingDeleteTarget = null;
+  }
+
+  if (cancelClearBtn) cancelClearBtn.addEventListener('click', closeClearModal);
+  if (confirmClearModalBackdrop) {
+    confirmClearModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === confirmClearModalBackdrop) closeClearModal();
+    });
+  }
+
+  if (executeClearBtn) {
+    executeClearBtn.addEventListener('click', () => {
+      if (pendingDeleteTarget === 'bulk') {
+        const records = getSavedRecords();
+        const updated = records.filter(item => !selectedMemberIds.has(item.id || item.mssv));
+        const deletedCount = records.length - updated.length;
+        saveRecords(updated);
+        selectedMemberIds.clear();
+        closeClearModal();
+        updateDataCounters();
+        renderDataTable(dataSearchInput ? dataSearchInput.value : '');
+        showToast(`✓ Đã xóa ${deletedCount} thành viên đã chọn`);
+      } else if (pendingDeleteTarget === 'all') {
+        localStorage.removeItem(STORAGE_KEY);
+        sessionRecords.clear();
+        selectedMemberIds.clear();
+        closeClearModal();
+        updateDataCounters();
+        renderDataTable('');
+        showToast("✓ Đã xóa toàn bộ dữ liệu thành viên trên máy");
+      }
+    });
+  }
+
+  // Phím ESC đóng các modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAdminAuthModal();
+      closeMemberFormModal();
+      closeDeleteConfirmModal();
+      closeClearModal();
+    }
+  });
+
+  // CHUYỂN TOÀN BỘ MÀN HÌNH SANG TRANG DỮ LIỆU THÀNH VIÊN
+  function showDataPage() {
+    updateDataCounters();
+    renderDataTable(dataSearchInput ? dataSearchInput.value : '');
+    
+    // Đóng các modal phụ nếu đang mở
+    adminBackdrop.classList.remove('visible');
+    bgModalBackdrop.classList.remove('visible');
+    closeMemberFormModal();
+    closeDeleteConfirmModal();
+    closeClearModal();
+
+    // Chuyển view
+    formCard.style.display = 'none';
+    dataDashboardPage.style.display = 'flex';
+
+    if (window.location.hash !== '#data') {
+      history.pushState({ page: 'data' }, 'Danh sách dữ liệu thành viên', '#data');
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // QUAY LẠI TRANG BIỂU MẪU NHẬP LIỆU
+  function showFormPage() {
+    dataDashboardPage.style.display = 'none';
+    formCard.style.display = 'flex';
+    updateDataCounters();
+
+    if (window.location.hash === '#data') {
+      history.pushState({ page: 'form' }, 'Nhập thông tin thành viên', '#form');
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (openDataViewerBtn) openDataViewerBtn.addEventListener('click', showDataPage);
+  if (viewAllDataFromSuccessBtn) viewAllDataFromSuccessBtn.addEventListener('click', showDataPage);
+  if (backToFormBtn) backToFormBtn.addEventListener('click', showFormPage);
+  if (emptyToFormBtn) emptyToFormBtn.addEventListener('click', showFormPage);
+
+  // Router hỗ trợ nút Back/Forward của trình duyệt và URL hash
+  window.addEventListener('popstate', () => {
+    if (window.location.hash === '#data') {
+      showDataPage();
+    } else {
+      showFormPage();
+    }
+  });
+
+  if (dataSearchInput) {
+    dataSearchInput.addEventListener('input', (e) => {
+      renderDataTable(e.target.value);
+    });
+  }
+
+  // 1. SAO CHÉP TOÀN BỘ BẢNG DÁN TRỰC TIẾP VÀO EXCEL HOẶC GOOGLE SHEETS (TAB-DELIMITED)
+  copyTableToExcelBtn.addEventListener('click', async () => {
+    const records = getSavedRecords();
+    if (!records.length) {
+      alert("Chưa có dữ liệu thành viên nào để sao chép.");
+      return;
+    }
+
+    let tsv = "STT\tMSSV\tHọ và tên\tMã thẻ thành viên\tThời gian ghi nhận\tĐơn vị\n";
+    records.forEach((r, i) => {
+      tsv += `${i + 1}\t${r.mssv || ''}\t${r.fullName || ''}\t${r.code || ''}\t${r.displayTime || r.time || ''}\t${r.unit || DON_VI}\n`;
+    });
+
+    try {
+      await navigator.clipboard.writeText(tsv);
+      showToast("📋 Đã copy toàn bộ bảng! Hãy mở Excel/Google Sheet và bấm Ctrl + V (Dán) nhé!");
+    } catch (err) {
+      const ta = document.createElement('textarea');
+      ta.value = tsv;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast("📋 Đã copy toàn bộ bảng! Hãy sang Excel bấm Ctrl + V để dán!");
+    }
+  });
+
+  // 2. XUẤT FILE EXCEL (.CSV) UTF-8 CÓ BOM KHÔNG LỖI TIẾNG VIỆT
+  exportExcelBtn.addEventListener('click', () => {
+    const records = getSavedRecords();
+    if (!records.length) {
+      alert("Chưa có thành viên nào để xuất file Excel.");
+      return;
+    }
+
+    let csv = "\uFEFF"; 
+    csv += "STT,Mã số sinh viên (MSSV),Họ và tên,Mã thẻ thành viên,Thời gian ghi nhận,Đơn vị\n";
+
+    records.forEach((r, i) => {
+      const safeName = `"${(r.fullName || '').replace(/"/g, '""')}"`;
+      const safeUnit = `"${(r.unit || DON_VI).replace(/"/g, '""')}"`;
+      csv += `${i + 1},${r.mssv || ''},${safeName},${r.code || ''},"${r.displayTime || r.time || ''}",${safeUnit}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `danh_sach_thanh_vien_${Date.now()}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast("✓ Đã tải file Excel (.csv) thành công!");
+  });
+
+  // 3. XUẤT FILE JSON
+  exportJsonBtn.addEventListener('click', () => {
+    const records = getSavedRecords();
+    if (!records.length) {
+      alert("Chưa có dữ liệu để xuất file JSON.");
+      return;
+    }
+
+    const jsonStr = JSON.stringify(records, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `danh_sach_thanh_vien_${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast("✓ Đã tải tệp JSON thành công!");
+  });
+
+  // 4. SAO CHÉP CHUỖI JSON
+  copyJsonBtn.addEventListener('click', async () => {
+    const records = getSavedRecords();
+    if (!records.length) {
+      alert("Chưa có dữ liệu để sao chép JSON.");
+      return;
+    }
+    const jsonStr = JSON.stringify(records, null, 2);
+    try {
+      await navigator.clipboard.writeText(jsonStr);
+      showToast("✓ Đã sao chép dữ liệu JSON vào bộ nhớ tạm!");
+    } catch (e) {
+      alert("Không thể tự động sao chép. Vui lòng thử nút Xuất JSON.");
+    }
+  });
+
+  // Khởi tạo số đếm dữ liệu khi load trang & kiểm tra URL hash ban đầu
+  updateDataCounters();
+  if (window.location.hash === '#data') {
+    showDataPage();
+  }
+
+  /* ==========================================================================
+     ADMIN MODAL (Chạm 5 lần vào huy hiệu trường)
+     ========================================================================== */
+  function updateAdminStats() {
+    updateDataCounters();
+  }
+
+  function handleBadgeTap() {
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+
+    if (tapCount >= 5) {
+      tapCount = 0;
+      updateAdminStats();
+      adminBackdrop.classList.add('visible');
+    }
+  }
+
+  schoolTopBadge.addEventListener('click', handleBadgeTap);
+  document.getElementById('univPillBtn').addEventListener('click', handleBadgeTap);
+
+  closeAdminModalBtn.addEventListener('click', () => {
+    adminBackdrop.classList.remove('visible');
+  });
+
+  adminBackdrop.addEventListener('click', (e) => {
+    if (e.target === adminBackdrop) adminBackdrop.classList.remove('visible');
+  });
+
+  // Xuất file CSV từ Admin Panel
+  exportCsvBtn.addEventListener('click', () => {
+    exportExcelBtn.click();
+  });
+
+  clearAllDataBtn.addEventListener('click', () => {
+    clearAllTableDataBtn.click();
+  });
+</script>
+</body>
+</html>

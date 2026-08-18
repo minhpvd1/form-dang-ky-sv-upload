@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Danh Sách Dữ Liệu Thành Viên - Trường Đại Học Tây Nguyên</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1D4ED8;
+      --primary-hover: #1E40AF;
+      --accent: #F59E0B;
+      --bg-dark: #0A0F1D;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --success: #10B981;
+      --error: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-2xl: 24px;
+      --radius-full: 9999px;
+      --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 48px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* BACKGROUND CANVAS */
+    .bg-stage {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 20%, #1e293b 0%, #0a0f1d 100%);
+    }
+
+    .bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.6) 100%);
+    }
+
+    /* TOP NAVBAR */
+    .data-nav {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1120px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      color: #0F172A;
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+    }
+
+    .nav-btn-back:hover {
+      background: #FFFFFF;
+      transform: translateX(-3px);
+      color: var(--primary);
+    }
+
+    .nav-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    /* MAIN CONTAINER CARD */
+    .main-card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1120px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius-2xl);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+    }
+
+    /* STATS GRID */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .stat-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748B;
+    }
+
+    .stat-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+
+    /* TOOLBAR */
+    .toolbar-box {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      padding: 12px 14px;
+      border-radius: var(--radius-lg);
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 240px;
+      padding: 10px 16px;
+      font-size: 13.5px;
+      border: 1.5px solid #CBD5E1;
+      border-radius: var(--radius-md);
+      outline: none;
+      background: #FFFFFF;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 15px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-blue { background: #2563EB; color: #FFFFFF; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25); }
+    .btn-blue:hover { background: #1D4ED8; }
+    .btn-green { background: #16A34A; color: #FFFFFF; box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25); }
+    .btn-green:hover { background: #15803D; }
+    .btn-sky { background: #0284C7; color: #FFFFFF; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25); }
+    .btn-sky:hover { background: #0369A1; }
+    .btn-red { background: #DC2626; color: #FFFFFF; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25); }
+    .btn-red:hover { background: #B91C1C; }
+    .btn-outline { background: #FFFFFF; color: #334155; border-color: #CBD5E1; }
+    .btn-outline:hover { background: #F1F5F9; }
+
+    /* TABLE */
+    .table-box {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-lg);
+      background: #FFFFFF;
+      min-height: 280px;
+      max-height: 560px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    th {
+      background: #F8FAFC;
+      color: #334155;
+      font-weight: 700;
+      padding: 12px 14px;
+      border-bottom: 2px solid #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #F1F5F9;
+      color: #0F172A;
+      white-space: nowrap;
+    }
+
+    tbody tr:hover {
+      background: #F0F7FF;
+    }
+
+    tbody tr.selected-row {
+      background: #EFF6FF;
+    }
+
+    .row-actions-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-row-edit {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      cursor: pointer;
+      padding: 5px 10px;
+      color: #1D4ED8;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: var(--transition);
+    }
+
+    .btn-row-edit:hover {
+      background: #DBEAFE;
+      color: #1E40AF;
+      transform: translateY(-1px);
+    }
+
+    .btn-row-delete {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      cursor: pointer;
+      padding: 5px 10px;
+      color: #DC2626;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: var(--transition);
+    }
+
+    .btn-row-delete:hover {
+      background: #FEE2E2;
+      color: #B91C1C;
+      transform: translateY(-1px);
+    }
+
+    .custom-table-checkbox {
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+      accent-color: var(--primary);
+      border-radius: 4px;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 54px 16px;
+      text-align: center;
+      color: #64748B;
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      border: 1px dashed #CBD5E1;
+    }
+
+    /* MODALS */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-panel {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-2xl);
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px) scale(0.96); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: #F8FAFC;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #64748B;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-close:hover { color: #0F172A; }
+
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    .form-input {
+      padding: 10px 14px;
+      font-size: 13.5px;
+      border: 1.5px solid #CBD5E1;
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(40px);
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 11px 22px;
+      border-radius: var(--radius-full);
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      .main-card { padding: 18px 16px; }
+      .page-title { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-stage">
+  <div class="bg-overlay"></div>
+</div>
+
+<nav class="data-nav">
+  <a href="/" class="nav-btn-back">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+    <span>Quay lại trang nhập thông tin</span>
+  </a>
+
+  <div class="nav-badge">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+      <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+    </svg>
+    <span>Trường Đại học Tây Nguyên</span>
+  </div>
+</nav>
+
+<main class="main-card">
+  <div class="header-row">
+    <div>
+      <h1 class="page-title">
+        <span>Danh sách dữ liệu thành viên</span>
+        <span class="pulse-dot" title="Hệ thống cập nhật thời gian thực"></span>
+      </h1>
+      <p style="font-size: 12.5px; color: #64748B; margin-top: 4px;">Quản lý, thêm, sửa, xóa & sao chép / xuất file bảng tính</p>
+    </div>
+
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <button type="button" id="addNewMemberBtn" class="btn-action btn-blue" title="Thêm thành viên mới vào danh sách">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>+ Thêm thành viên</span>
+      </button>
+
+      <button type="button" id="bulkDeleteBtn" class="btn-action btn-red" style="display: none;" title="Xóa các thành viên đã chọn">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        <span id="bulkDeleteCountText">Xóa đã chọn</span>
+      </button>
+
+      <button type="button" id="refreshBtn" class="btn-action btn-outline" title="Làm mới bảng dữ liệu">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        <span>Làm mới</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-label">Tổng số thành viên</span>
+      <div style="display: flex; align-items: baseline; gap: 6px;">
+        <span class="stat-val" id="totalCount" style="color: var(--primary);">0</span>
+        <span style="font-size: 13px; color: #64748B; font-weight: 600;">người</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-label">Thành viên mới nhất</span>
+      <span class="stat-val" id="latestName" style="font-size: 15px; font-weight: 700; color: #0F172A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Chưa có</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-label">Thời gian cập nhật</span>
+      <span class="stat-val" id="lastUpdated" style="font-size: 14px; font-weight: 700; color: #475569;">Vừa xong</span>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar-box">
+    <input 
+      type="text" 
+      id="searchInput" 
+      class="search-input" 
+      placeholder="🔍 Tìm kiếm theo MSSV, Họ và tên hoặc Mã thẻ..." 
+    />
+
+    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+      <button type="button" id="copyExcelBtn" class="btn-action btn-blue" title="Sao chép toàn bộ bảng, sang Excel bấm Ctrl + V">
+        📋 Copy dán Excel / Sheet
+      </button>
+      <button type="button" id="exportCsvBtn" class="btn-action btn-green" title="Tải file Excel .csv chuẩn tiếng Việt">
+        Xuất Excel (.csv)
+      </button>
+      <button type="button" id="exportJsonBtn" class="btn-action btn-sky" title="Tải file JSON">
+        Xuất JSON
+      </button>
+      <button type="button" id="copyJsonBtn" class="btn-action btn-outline" title="Copy chuỗi JSON">
+        Copy JSON
+      </button>
+    </div>
+  </div>
+
+  <!-- DATA TABLE -->
+  <div class="table-box">
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th style="width: 38px; text-align: center;">
+            <input type="checkbox" id="selectAllCheckbox" class="custom-table-checkbox" title="Chọn tất cả">
+          </th>
+          <th style="width: 45px; text-align: center;">STT</th>
+          <th style="min-width: 120px;">MSSV</th>
+          <th style="min-width: 170px;">Họ và tên</th>
+          <th style="min-width: 120px;">Mã thẻ thành viên</th>
+          <th style="min-width: 140px;">Thời gian ghi nhận</th>
+          <th style="min-width: 120px;">Đơn vị</th>
+          <th style="min-width: 140px; text-align: center;">Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div id="emptyBox" class="empty-state">
+    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#94A3B8" stroke-width="1.5" style="margin: 0 auto 12px; display: block;">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <line x1="9" y1="9" x2="15" y2="15"/>
+      <line x1="15" y1="9" x2="9" y2="15"/>
+    </svg>
+    <div style="font-weight: 800; font-size: 16px; color: var(--text);" id="emptyTitle">Chưa có dữ liệu thành viên</div>
+    <div style="font-size: 13px; margin-top: 6px;">Dữ liệu sẽ tự động xuất hiện tại đây ngay khi có thành viên gửi thông tin hoặc bạn tự thêm.</div>
+    <div style="display: flex; gap: 8px; justify-content: center; margin-top: 14px;">
+      <button type="button" id="emptyAddBtn" class="btn-action btn-blue">
+        + Thêm thành viên ngay
+      </button>
+      <a href="/" class="btn-action btn-outline" style="text-decoration: none;">
+        Nhập qua biểu mẫu
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; flex-wrap: wrap; gap: 8px;">
+    <button type="button" id="clearAllBtn" style="background: none; border: none; color: var(--error); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"></polyline>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+      </svg>
+      <span>Xóa toàn bộ dữ liệu máy</span>
+    </button>
+
+    <span id="rowCountLabel" style="font-size: 12.5px; color: #64748B; font-weight: 600;">Hiển thị 0 thành viên</span>
+  </div>
+</main>
+
+<!-- MODAL THÊM MỚI / CHỈNH SỬA THÀNH VIÊN -->
+<div id="memberFormModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 id="memberFormModalTitle" style="font-size: 16px; margin: 0; font-weight: 800; color: #0F172A;">Thêm thành viên mới</h3>
+      <button type="button" class="modal-close" id="closeMemberFormModalBtn">&times;</button>
+    </div>
+    <form id="memberCrudForm" class="modal-body">
+      <input type="hidden" id="crudMemberId" value="">
+      <div class="form-group">
+        <label for="crudMssvInput">Mã số sinh viên (MSSV) <span style="color: var(--error);">*</span></label>
+        <input type="text" id="crudMssvInput" class="form-input" placeholder="Ví dụ: 22103045" required style="text-transform: uppercase;">
+      </div>
+      <div class="form-group">
+        <label for="crudNameInput">Họ và tên thành viên <span style="color: var(--error);">*</span></label>
+        <input type="text" id="crudNameInput" class="form-input" placeholder="Ví dụ: Nguyễn Văn An" required>
+      </div>
+      <div class="form-group">
+        <label for="crudCodeInput">Mã thẻ thành viên <span style="color: var(--error);">*</span></label>
+        <input type="text" id="crudCodeInput" class="form-input" placeholder="Ví dụ: CLB-TN-088" required>
+      </div>
+      <div class="form-group">
+        <label for="crudUnitInput">Đơn vị / Khoa</label>
+        <input type="text" id="crudUnitInput" class="form-input" placeholder="Trường Đại học Tây Nguyên">
+      </div>
+      <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">
+        <button type="button" id="cancelMemberFormBtn" class="btn-action btn-outline">Hủy bỏ</button>
+        <button type="submit" class="btn-action btn-blue">Lưu thông tin</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL XÁC NHẬN XÓA 1 DÒNG DỮ LIỆU -->
+<div id="confirmDeleteModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width: 420px; text-align: center;">
+    <div class="modal-body" style="padding: 24px 20px;">
+      <div style="width: 50px; height: 50px; border-radius: 50%; background: #FEE2E2; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #DC2626;">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+      </div>
+      <h3 style="font-size: 17px; color: #0F172A; margin-top: 8px;">Xác nhận xóa thành viên?</h3>
+      <p id="confirmDeleteMsg" style="font-size: 13.5px; color: #64748B; margin: 0; line-height: 1.5;">Bạn có chắc chắn muốn xóa thành viên này?</p>
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <button type="button" id="cancelDeleteBtn" class="btn-action btn-outline" style="flex: 1;">Hủy bỏ</button>
+        <button type="button" id="executeDeleteBtn" class="btn-action btn-red" style="flex: 1;">Xóa thành viên</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL XÁC NHẬN XÓA TOÀN BỘ HOẶC NHIỀU MỤC -->
+<div id="confirmClearModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width: 420px; text-align: center;">
+    <div class="modal-body" style="padding: 24px 20px;">
+      <div style="width: 50px; height: 50px; border-radius: 50%; background: #FEE2E2; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #DC2626;">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        </svg>
+      </div>
+      <h3 id="confirmClearTitle" style="font-size: 17px; color: #0F172A; margin-top: 8px;">Xác nhận xóa dữ liệu?</h3>
+      <p id="confirmClearMsg" style="font-size: 13.5px; color: #64748B; margin: 0; line-height: 1.5;">Thao tác này sẽ xóa vĩnh viễn dữ liệu khỏi máy.</p>
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <button type="button" id="cancelClearBtn" class="btn-action btn-outline" style="flex: 1;">Hủy bỏ</button>
+        <button type="button" id="executeClearBtn" class="btn-action btn-red" style="flex: 1;">Xác nhận xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL XÁC THỰC MẬT KHẨU QUẢN TRỊ VIÊN -->
+<div id="adminAuthModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width: 400px;">
+    <div class="modal-head">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <h3 style="font-size: 16px; margin: 0; font-weight: 800; color: #0F172A;">Xác thực Quản trị viên</h3>
+      </div>
+      <button type="button" class="modal-close" id="closeAdminAuthModalBtn">&times;</button>
+    </div>
+    <form id="adminAuthForm" class="modal-body" style="gap: 14px; padding: 18px 20px;">
+      <p style="font-size: 13px; color: #64748B; margin: 0; line-height: 1.5;">
+        Danh sách đang ở chế độ <b>Chỉ xem</b>. Vui lòng nhập mật khẩu Quản trị viên để thực hiện thao tác Thêm, Sửa hoặc Xóa dữ liệu.
+      </p>
+
+      <div class="form-group">
+        <label for="adminPasswordInput">Mật khẩu Quản trị viên <span style="color: var(--error);">*</span></label>
+        <input 
+          type="password" 
+          id="adminPasswordInput" 
+          class="form-input" 
+          placeholder="Nhập mật khẩu quản trị viên..." 
+          autocomplete="current-password"
+          required 
+        />
+        <div id="adminAuthError" style="display: none; font-size: 12px; color: var(--error); font-weight: 600; margin-top: 4px;">
+          Mật khẩu quản trị viên không chính xác! Vui lòng thử lại.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px;">
+        <button type="button" id="cancelAdminAuthBtn" class="btn-action btn-outline" style="padding: 8px 16px;">
+          Hủy bỏ
+        </button>
+        <button type="submit" class="btn-action btn-blue" style="padding: 8px 20px;">
+          <span>Mở khóa</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast">Đã sao chép vào bộ nhớ tạm!</div>
+
+<script>
+  const STORAGE_KEY = "sv_checkin_records_v1";
+  const DON_VI = "Trường Đại học Tây Nguyên";
+  const TEN_BIEU_MAU = "Nhập thông tin thành viên";
+
+  const totalCountEl = document.getElementById('totalCount');
+  const latestNameEl = document.getElementById('latestName');
+  const lastUpdatedEl = document.getElementById('lastUpdated');
+  const rowCountLabel = document.getElementById('rowCountLabel');
+  const searchInput = document.getElementById('searchInput');
+  const dataTable = document.getElementById('dataTable');
+  const tableBody = document.getElementById('tableBody');
+  const emptyBox = document.getElementById('emptyBox');
+  const emptyTitle = document.getElementById('emptyTitle');
+  const toast = document.getElementById('toast');
+  const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+  const addNewMemberBtn = document.getElementById('addNewMemberBtn');
+  const emptyAddBtn = document.getElementById('emptyAddBtn');
+  const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+  const bulkDeleteCountText = document.getElementById('bulkDeleteCountText');
+
+  // Modals
+  const memberFormModalBackdrop = document.getElementById('memberFormModalBackdrop');
+  const memberFormModalTitle = document.getElementById('memberFormModalTitle');
+  const closeMemberFormModalBtn = document.getElementById('closeMemberFormModalBtn');
+  const cancelMemberFormBtn = document.getElementById('cancelMemberFormBtn');
+  const memberCrudForm = document.getElementById('memberCrudForm');
+  const crudMemberId = document.getElementById('crudMemberId');
+  const crudMssvInput = document.getElementById('crudMssvInput');
+  const crudNameInput = document.getElementById('crudNameInput');
+  const crudCodeInput = document.getElementById('crudCodeInput');
+  const crudUnitInput = document.getElementById('crudUnitInput');
+
+  const confirmDeleteModalBackdrop = document.getElementById('confirmDeleteModalBackdrop');
+  const confirmDeleteMsg = document.getElementById('confirmDeleteMsg');
+  const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+  const executeDeleteBtn = document.getElementById('executeDeleteBtn');
+
+  const confirmClearModalBackdrop = document.getElementById('confirmClearModalBackdrop');
+  const confirmClearTitle = document.getElementById('confirmClearTitle');
+  const confirmClearMsg = document.getElementById('confirmClearMsg');
+  const cancelClearBtn = document.getElementById('cancelClearBtn');
+  const executeClearBtn = document.getElementById('executeClearBtn');
+
+  let selectedMemberIds = new Set();
+  let pendingDeleteTarget = null;
+  let toastTimer = null;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+
+  function getRecords() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveRecords(records) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  }
+
+  function updateBulkDeleteUI() {
+    const count = selectedMemberIds.size;
+    if (bulkDeleteBtn) {
+      if (count > 0) {
+        bulkDeleteBtn.style.display = 'inline-flex';
+        if (bulkDeleteCountText) bulkDeleteCountText.textContent = `Xóa (${count}) đã chọn`;
+      } else {
+        bulkDeleteBtn.style.display = 'none';
+      }
+    }
+  }
+
+  function render(query = '') {
+    const records = getRecords();
+    const q = (query || '').trim().toLowerCase();
+
+    totalCountEl.textContent = records.length;
+    lastUpdatedEl.textContent = new Date().toLocaleTimeString('vi-VN');
+
+    if (records.length > 0) {
+      const latest = records[records.length - 1];
+      latestNameEl.textContent = `${latest.fullName || '---'} (${latest.mssv || '---'})`;
+    } else {
+      latestNameEl.textContent = "Chưa có";
+    }
+
+    const filtered = records.filter(r => {
+      if (!q) return true;
+      const mssv = (r.mssv || '').toLowerCase();
+      const name = (r.fullName || '').toLowerCase();
+      const code = (r.code || '').toLowerCase();
+      const unit = (r.unit || '').toLowerCase();
+      return mssv.includes(q) || name.includes(q) || code.includes(q) || unit.includes(q);
+    });
+
+    tableBody.innerHTML = '';
+
+    if (selectAllCheckbox) {
+      if (filtered.length > 0 && filtered.every(r => selectedMemberIds.has(r.id || r.mssv))) {
+        selectAllCheckbox.checked = true;
+        selectAllCheckbox.indeterminate = false;
+      } else if (filtered.some(r => selectedMemberIds.has(r.id || r.mssv))) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = true;
+      } else {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+      }
+    }
+
+    if (!filtered.length) {
+      dataTable.style.display = 'none';
+      emptyBox.style.display = 'block';
+      emptyTitle.textContent = q ? `Không tìm thấy kết quả phù hợp với "${q}"` : 'Chưa có dữ liệu thành viên';
+      rowCountLabel.textContent = `Hiển thị 0 / ${records.length} thành viên`;
+      updateBulkDeleteUI();
+      return;
+    }
+
+    dataTable.style.display = 'table';
+    emptyBox.style.display = 'none';
+    rowCountLabel.textContent = `Hiển thị ${filtered.length} / ${records.length} thành viên`;
+
+    filtered.forEach((r, idx) => {
+      const recId = r.id || r.mssv;
+      const isChecked = selectedMemberIds.has(recId);
+      const tr = document.createElement('tr');
+      if (isChecked) tr.classList.add('selected-row');
+
+      tr.innerHTML = `
+        <td style="text-align: center;">
+          <input type="checkbox" class="custom-table-checkbox row-select-box" data-id="${recId}" ${isChecked ? 'checked' : ''}>
+        </td>
+        <td style="text-align: center; color: #64748B; font-weight: 700;">${idx + 1}</td>
+        <td>
+          <span style="font-family: monospace; font-weight: 800; color: var(--primary); font-size: 13.5px; background: #EFF6FF; padding: 3px 8px; border-radius: 5px; border: 1px solid #DBEAFE;">${r.mssv || '---'}</span>
+        </td>
+        <td><div style="font-weight: 700; color: #0F172A;">${r.fullName || '---'}</div></td>
+        <td><span style="font-size: 12px; font-family: monospace; background: #F1F5F9; padding: 3px 7px; border-radius: 4px; color: #475569; font-weight: 600;">${r.code || '---'}</span></td>
+        <td style="font-size: 12px; color: #64748B;">${r.displayTime || r.time || '---'}</td>
+        <td style="font-size: 12px; color: #475569;">${r.unit || DON_VI}</td>
+        <td style="text-align: center;">
+          <div class="row-actions-group">
+            <button type="button" class="btn-row-edit" title="Sửa thông tin" data-id="${recId}">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              <span>Sửa</span>
+            </button>
+            <button type="button" class="btn-row-delete" title="Xóa thành viên" data-id="${recId}">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              <span>Xoá</span>
+            </button>
+          </div>
+        </td>
+      `;
+
+      tr.querySelector('.row-select-box').addEventListener('change', (e) => {
+        if (e.target.checked) {
+          selectedMemberIds.add(recId);
+          tr.classList.add('selected-row');
+        } else {
+          selectedMemberIds.delete(recId);
+          tr.classList.remove('selected-row');
+        }
+        updateBulkDeleteUI();
+        if (selectAllCheckbox) {
+          const allBoxes = Array.from(tableBody.querySelectorAll('.row-select-box'));
+          selectAllCheckbox.checked = allBoxes.length > 0 && allBoxes.every(b => b.checked);
+          selectAllCheckbox.indeterminate = !selectAllCheckbox.checked && allBoxes.some(b => b.checked);
+        }
+      });
+
+      tr.querySelector('.btn-row-edit').addEventListener('click', () => {
+        requireAdminAuth(() => openEditModal(r));
+      });
+      tr.querySelector('.btn-row-delete').addEventListener('click', () => {
+        requireAdminAuth(() => openDeleteModal(r));
+      });
+
+      tableBody.appendChild(tr);
+    });
+
+    updateBulkDeleteUI();
+  }
+
+  // Select all checkbox
+  if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener('change', (e) => {
+      const records = getRecords();
+      const q = (searchInput ? searchInput.value : '').trim().toLowerCase();
+      const filtered = records.filter(r => {
+        if (!q) return true;
+        const mssv = (r.mssv || '').toLowerCase();
+        const name = (r.fullName || '').toLowerCase();
+        const code = (r.code || '').toLowerCase();
+        const unit = (r.unit || '').toLowerCase();
+        return mssv.includes(q) || name.includes(q) || code.includes(q) || unit.includes(q);
+      });
+
+      if (e.target.checked) {
+        filtered.forEach(r => selectedMemberIds.add(r.id || r.mssv));
+      } else {
+        filtered.forEach(r => selectedMemberIds.delete(r.id || r.mssv));
+      }
+      render(searchInput ? searchInput.value : '');
+    });
+  }
+
+  /* ADMIN AUTH LOGIC */
+  const ADMIN_PASSWORD = "minhzxc@301";
+  let isAdminAuthenticated = false;
+  let pendingAdminAction = null;
+
+  const adminAuthModalBackdrop = document.getElementById('adminAuthModalBackdrop');
+  const adminAuthForm = document.getElementById('adminAuthForm');
+  const adminPasswordInput = document.getElementById('adminPasswordInput');
+  const adminAuthError = document.getElementById('adminAuthError');
+  const closeAdminAuthModalBtn = document.getElementById('closeAdminAuthModalBtn');
+  const cancelAdminAuthBtn = document.getElementById('cancelAdminAuthBtn');
+
+  function closeAdminAuthModal() {
+    if (adminAuthModalBackdrop) adminAuthModalBackdrop.classList.remove('visible');
+    pendingAdminAction = null;
+    if (adminPasswordInput) adminPasswordInput.value = '';
+    if (adminAuthError) adminAuthError.style.display = 'none';
+  }
+
+  function requireAdminAuth(actionCallback) {
+    if (isAdminAuthenticated) {
+      actionCallback();
+      return;
+    }
+    pendingAdminAction = actionCallback;
+    if (adminPasswordInput) adminPasswordInput.value = '';
+    if (adminAuthError) adminAuthError.style.display = 'none';
+    if (adminAuthModalBackdrop) adminAuthModalBackdrop.classList.add('visible');
+    setTimeout(() => {
+      if (adminPasswordInput) adminPasswordInput.focus();
+    }, 150);
+  }
+
+  if (adminAuthForm) {
+    adminAuthForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const entered = (adminPasswordInput ? adminPasswordInput.value : '').trim();
+      if (entered === ADMIN_PASSWORD) {
+        isAdminAuthenticated = true;
+        closeAdminAuthModal();
+        showToast("✓ Đã xác thực Quản trị viên thành công!");
+        if (typeof pendingAdminAction === 'function') {
+          const action = pendingAdminAction;
+          pendingAdminAction = null;
+          action();
+        }
+      } else {
+        if (adminAuthError) {
+          adminAuthError.style.display = 'block';
+          adminAuthError.textContent = "Mật khẩu quản trị viên không chính xác! Vui lòng thử lại.";
+        }
+        if (adminPasswordInput) {
+          adminPasswordInput.select();
+          adminPasswordInput.focus();
+        }
+      }
+    });
+  }
+
+  if (closeAdminAuthModalBtn) closeAdminAuthModalBtn.addEventListener('click', closeAdminAuthModal);
+  if (cancelAdminAuthBtn) cancelAdminAuthBtn.addEventListener('click', closeAdminAuthModal);
+  if (adminAuthModalBackdrop) {
+    adminAuthModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === adminAuthModalBackdrop) closeAdminAuthModal();
+    });
+  }
+
+  // MODAL FUNCTIONS
+  function openAddModal() {
+    crudMemberId.value = '';
+    crudMssvInput.value = '';
+    crudNameInput.value = '';
+    crudCodeInput.value = `#TN-${Math.floor(1000 + Math.random() * 9000)}`;
+    crudUnitInput.value = DON_VI;
+    memberFormModalTitle.textContent = "Thêm thành viên mới";
+    memberFormModalBackdrop.classList.add('visible');
+    setTimeout(() => crudMssvInput.focus(), 150);
+  }
+
+  function openEditModal(record) {
+    crudMemberId.value = record.id || record.mssv;
+    crudMssvInput.value = record.mssv || '';
+    crudNameInput.value = record.fullName || '';
+    crudCodeInput.value = record.code || '';
+    crudUnitInput.value = record.unit || DON_VI;
+    memberFormModalTitle.textContent = `Chỉnh sửa: ${record.fullName || record.mssv}`;
+    memberFormModalBackdrop.classList.add('visible');
+    setTimeout(() => crudNameInput.focus(), 150);
+  }
+
+  function closeMemberModal() {
+    memberFormModalBackdrop.classList.remove('visible');
+  }
+
+  if (addNewMemberBtn) addNewMemberBtn.addEventListener('click', () => requireAdminAuth(openAddModal));
+  if (emptyAddBtn) emptyAddBtn.addEventListener('click', () => requireAdminAuth(openAddModal));
+  if (closeMemberFormModalBtn) closeMemberFormModalBtn.addEventListener('click', closeMemberModal);
+  if (cancelMemberFormBtn) cancelMemberFormBtn.addEventListener('click', closeMemberModal);
+  if (memberFormModalBackdrop) {
+    memberFormModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === memberFormModalBackdrop) closeMemberModal();
+    });
+  }
+
+  if (memberCrudForm) {
+    memberCrudForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = crudMemberId.value.trim();
+      const mssv = crudMssvInput.value.trim().toUpperCase();
+      const fullName = crudNameInput.value.trim();
+      const code = crudCodeInput.value.trim();
+      const unit = crudUnitInput.value.trim() || DON_VI;
+
+      if (!mssv || !fullName || !code) {
+        alert("Vui lòng nhập đủ thông tin!");
+        return;
+      }
+
+      const records = getRecords();
+      const nowStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' • ' + new Date().toLocaleDateString('vi-VN');
+
+      if (id) {
+        let found = false;
+        const updated = records.map(item => {
+          if ((item.id || item.mssv) === id) {
+            found = true;
+            return { ...item, mssv, fullName, code, unit, lastModified: new Date().toISOString() };
+          }
+          return item;
+        });
+        if (found) {
+          saveRecords(updated);
+          showToast(`✓ Đã cập nhật thông tin của ${fullName}`);
+        } else {
+          records.push({ id: Date.now().toString(), mssv, fullName, code, unit, time: nowStr, displayTime: nowStr, timestamp: new Date().toISOString() });
+          saveRecords(records);
+          showToast(`✓ Đã thêm thành viên ${fullName}`);
+        }
+      } else {
+        const newRecord = {
+          id: 'rec_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+          mssv,
+          fullName,
+          code,
+          unit,
+          time: nowStr,
+          displayTime: nowStr,
+          timestamp: new Date().toISOString()
+        };
+        records.push(newRecord);
+        saveRecords(records);
+        showToast(`✓ Đã thêm thành viên ${fullName}`);
+      }
+
+      closeMemberModal();
+      render(searchInput ? searchInput.value : '');
+    });
+  }
+
+  // DELETE SINGLE
+  function openDeleteModal(record) {
+    pendingDeleteTarget = record;
+    confirmDeleteMsg.innerHTML = `Bạn có chắc muốn xóa <b>${record.fullName}</b> (MSSV: <code>${record.mssv}</code>) khỏi danh sách?`;
+    confirmDeleteModalBackdrop.classList.add('visible');
+  }
+
+  function closeDeleteModal() {
+    confirmDeleteModalBackdrop.classList.remove('visible');
+    pendingDeleteTarget = null;
+  }
+
+  if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+  if (confirmDeleteModalBackdrop) {
+    confirmDeleteModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === confirmDeleteModalBackdrop) closeDeleteModal();
+    });
+  }
+
+  if (executeDeleteBtn) {
+    executeDeleteBtn.addEventListener('click', () => {
+      if (!pendingDeleteTarget) return;
+      const targetId = pendingDeleteTarget.id || pendingDeleteTarget.mssv;
+      const targetName = pendingDeleteTarget.fullName || pendingDeleteTarget.mssv;
+      const records = getRecords();
+      const updated = records.filter(item => (item.id ? item.id !== targetId : item.mssv !== pendingDeleteTarget.mssv));
+      saveRecords(updated);
+      selectedMemberIds.delete(targetId);
+      closeDeleteModal();
+      render(searchInput ? searchInput.value : '');
+      showToast(`✓ Đã xóa thành viên ${targetName}`);
+    });
+  }
+
+  // BULK DELETE
+  if (bulkDeleteBtn) {
+    bulkDeleteBtn.addEventListener('click', () => {
+      const count = selectedMemberIds.size;
+      if (!count) return;
+      requireAdminAuth(() => {
+        pendingDeleteTarget = 'bulk';
+        confirmClearTitle.textContent = `Xóa ${count} thành viên đã chọn?`;
+        confirmClearMsg.innerHTML = `Bạn có chắc chắn muốn xóa vĩnh viễn <b>${count} thành viên</b> đã chọn?`;
+        confirmClearModalBackdrop.classList.add('visible');
+      });
+    });
+  }
+
+  // CLEAR ALL
+  const clearAllBtn = document.getElementById('clearAllBtn');
+  if (clearAllBtn) {
+    clearAllBtn.addEventListener('click', () => {
+      const records = getRecords();
+      if (!records.length) return alert("Hiện tại danh sách đang trống.");
+      requireAdminAuth(() => {
+        pendingDeleteTarget = 'all';
+        confirmClearTitle.textContent = `Xóa toàn bộ ${records.length} thành viên?`;
+        confirmClearMsg.innerHTML = `Thao tác này sẽ xóa toàn bộ <b>${records.length} bản ghi</b> khỏi máy này.`;
+        confirmClearModalBackdrop.classList.add('visible');
+      });
+    });
+  }
+
+  function closeClearModal() {
+    confirmClearModalBackdrop.classList.remove('visible');
+    pendingDeleteTarget = null;
+  }
+
+  if (cancelClearBtn) cancelClearBtn.addEventListener('click', closeClearModal);
+  if (confirmClearModalBackdrop) {
+    confirmClearModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === confirmClearModalBackdrop) closeClearModal();
+    });
+  }
+
+  if (executeClearBtn) {
+    executeClearBtn.addEventListener('click', () => {
+      if (pendingDeleteTarget === 'bulk') {
+        const records = getRecords();
+        const updated = records.filter(item => !selectedMemberIds.has(item.id || item.mssv));
+        const count = records.length - updated.length;
+        saveRecords(updated);
+        selectedMemberIds.clear();
+        closeClearModal();
+        render(searchInput ? searchInput.value : '');
+        showToast(`✓ Đã xóa ${count} thành viên đã chọn`);
+      } else if (pendingDeleteTarget === 'all') {
+        localStorage.removeItem(STORAGE_KEY);
+        selectedMemberIds.clear();
+        closeClearModal();
+        render('');
+        showToast("✓ Đã xóa toàn bộ dữ liệu thành viên trên máy");
+      }
+    });
+  }
+
+  // Keyboard ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAdminAuthModal();
+      closeMemberModal();
+      closeDeleteModal();
+      closeClearModal();
+    }
+  });
+
+  searchInput.addEventListener('input', (e) => render(e.target.value));
+  document.getElementById('refreshBtn').addEventListener('click', () => {
+    render(searchInput.value);
+    showToast("Đã làm mới danh sách dữ liệu!");
+  });
+
+  // COPY TAB-DELIMITED FOR EXCEL / SHEETS
+  document.getElementById('copyExcelBtn').addEventListener('click', async () => {
+    const records = getRecords();
+    if (!records.length) return alert("Chưa có dữ liệu thành viên để sao chép.");
+
+    let tsv = "STT\tMSSV\tHọ và tên\tMã thẻ thành viên\tThời gian ghi nhận\tĐơn vị\n";
+    records.forEach((r, i) => {
+      tsv += `${i + 1}\t${r.mssv || ''}\t${r.fullName || ''}\t${r.code || ''}\t${r.displayTime || r.time || ''}\t${r.unit || DON_VI}\n`;
+    });
+
+    try {
+      await navigator.clipboard.writeText(tsv);
+      showToast("📋 Đã copy bảng! Hãy mở Excel và bấm Ctrl + V để dán!");
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = tsv;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast("📋 Đã copy bảng! Hãy sang Excel bấm Ctrl + V để dán!");
+    }
+  });
+
+  // EXPORT CSV UTF-8 WITH BOM
+  document.getElementById('exportCsvBtn').addEventListener('click', () => {
+    const records = getRecords();
+    if (!records.length) return alert("Chưa có thành viên nào để xuất file.");
+
+    let csv = "\uFEFFSTT,Mã số sinh viên (MSSV),Họ và tên,Mã thẻ thành viên,Thời gian ghi nhận,Đơn vị\n";
+    records.forEach((r, i) => {
+      const safeName = `"${(r.fullName || '').replace(/"/g, '""')}"`;
+      const safeUnit = `"${(r.unit || DON_VI).replace(/"/g, '""')}"`;
+      csv += `${i + 1},${r.mssv || ''},${safeName},${r.code || ''},"${r.displayTime || r.time || ''}",${safeUnit}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `danh_sach_thanh_vien_${Date.now()}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast("✓ Đã tải file Excel (.csv)!");
+  });
+
+  // EXPORT JSON
+  document.getElementById('exportJsonBtn').addEventListener('click', () => {
+    const records = getRecords();
+    if (!records.length) return alert("Chưa có dữ liệu để xuất file JSON.");
+
+    const jsonStr = JSON.stringify(records, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `danh_sach_thanh_vien_${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast("✓ Đã tải tệp JSON!");
+  });
+
+  // COPY JSON
+  document.getElementById('copyJsonBtn').addEventListener('click', async () => {
+    const records = getRecords();
+    if (!records.length) return alert("Chưa có dữ liệu để sao chép JSON.");
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(records, null, 2));
+      showToast("✓ Đã sao chép chuỗi JSON!");
+    } catch (e) {
+      alert("Không thể tự động sao chép.");
+    }
+  });
+
+  // Initial render
+  render();
+</script>
+</body>
+</html>

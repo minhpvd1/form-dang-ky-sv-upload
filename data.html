@@ -850,11 +850,8 @@
       const resp = await fetch(API_URL);
       if (resp.ok) {
         const data = await resp.json();
-        if (data.records && data.records.length > 0) {
-          // Gộp: giữ records từ cloud, không ghi đè nếu local có thêm
-          const local = getRecords();
-          const cloudMssvs = new Set();
-          // Chuẩn hoá field names từ Supabase (snake_case → camelCase)
+        if (data.records) {
+          // Chỉ tin cloud: chuẩn hoá field names từ Supabase
           const normalized = data.records.map(r => ({
             id: r.id?.toString() || Date.now().toString(),
             mssv: r.mssv || '',
@@ -865,15 +862,12 @@
             event: r.event || 'Nhập thông tin thành viên',
             unit: r.unit || 'Trường Đại học Tây Nguyên',
           }));
-          normalized.forEach(r => cloudMssvs.add(r.mssv));
-          const merged = [...normalized];
-          for (const r of local) {
-            if (!cloudMssvs.has(r.mssv)) merged.push(r);
-          }
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
         }
       }
-    } catch (_) {}
+    } catch (_) {
+      // Nếu không fetch được cloud thì giữ nguyên localStorage
+    }
   }
 
   // Gọi sync ngay khi load

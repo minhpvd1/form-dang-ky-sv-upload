@@ -3845,8 +3845,7 @@
     }
   });
 
-  // Khởi tạo số đếm dữ liệu khi load trang & kiểm tra URL hash ban đầu
-  updateDataCounters();
+  // Kiểm tra URL hash ban đầu (sau khi syncFromCloud đã cập nhật giao diện)
   if (window.location.hash === '#data') {
     showDataPage();
   }

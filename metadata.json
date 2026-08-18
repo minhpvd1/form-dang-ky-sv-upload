@@ -1,6 +1,0 @@
-{
-  "name": "Hệ Thống Quản Lý & Đồng Bộ Đa Thiết Bị",
-  "description": "Ứng dụng đồng bộ hồ sơ thành viên và dữ liệu thời gian thực giữa các máy tính và thiết bị từ xa qua Firebase Firestore, tích hợp âm thanh thông báo và bộ theo dõi thiết bị trực tuyến.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

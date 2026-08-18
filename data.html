@@ -765,6 +765,24 @@
 
 <script>
   const STORAGE_KEY = "sv_checkin_records_v1";
+  const API_URL = "/api/records";
+
+  // Load records — từ API (cloud) trước, localStorage làm fallback
+  async function loadRecords() {
+    try {
+      const resp = await fetch(API_URL);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.records && data.records.length > 0) {
+          return data.records;
+        }
+      }
+    } catch (_) {}
+    // Fallback: localStorage
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch (_) { return []; }
+  }
   const DON_VI = "Trường Đại học Tây Nguyên";
   const TEN_BIEU_MAU = "Nhập thông tin thành viên";
 
@@ -825,6 +843,29 @@
       return [];
     }
   }
+
+  // Đồng bộ dữ liệu từ cloud về localStorage khi mở trang
+  async function syncFromCloud() {
+    try {
+      const resp = await fetch(API_URL);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.records && data.records.length > 0) {
+          // Gộp: giữ records từ cloud, không ghi đè nếu local có thêm
+          const local = getRecords();
+          const cloudMssvs = new Set(data.records.map(r => r.mssv));
+          const merged = [...data.records];
+          for (const r of local) {
+            if (!cloudMssvs.has(r.mssv)) merged.push(r);
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        }
+      }
+    } catch (_) {}
+  }
+
+  // Gọi sync ngay khi load
+  syncFromCloud().then(() => { renderTable(); renderStats(); });
 
   function saveRecords(records) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(records));

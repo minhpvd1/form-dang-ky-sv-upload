@@ -3591,10 +3591,12 @@
   }
 
   if (executeDeleteBtn) {
-    executeDeleteBtn.addEventListener('click', () => {
+    executeDeleteBtn.addEventListener('click', async () => {
       if (!pendingDeleteTarget) return;
       const targetId = pendingDeleteTarget.id || pendingDeleteTarget.mssv;
       const targetName = pendingDeleteTarget.fullName || pendingDeleteTarget.mssv;
+      // Xoá trên cloud
+      try { await fetch('/api/records', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mssv: pendingDeleteTarget.mssv }) }); } catch (_) {}
 
       const records = getSavedRecords();
       const updated = records.filter(item => (item.id ? item.id !== targetId : item.mssv !== pendingDeleteTarget.mssv));
@@ -3661,9 +3663,13 @@
   }
 
   if (executeClearBtn) {
-    executeClearBtn.addEventListener('click', () => {
+    executeClearBtn.addEventListener('click', async () => {
       if (pendingDeleteTarget === 'bulk') {
         const records = getSavedRecords();
+        const toDelete = records.filter(item => selectedMemberIds.has(item.id || item.mssv));
+        for (const r of toDelete) {
+          try { await fetch('/api/records', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mssv: r.mssv }) }); } catch (_) {}
+        }
         const updated = records.filter(item => !selectedMemberIds.has(item.id || item.mssv));
         const deletedCount = records.length - updated.length;
         saveRecords(updated);
@@ -3673,13 +3679,14 @@
         renderDataTable(dataSearchInput ? dataSearchInput.value : '');
         showToast(`✓ Đã xóa ${deletedCount} thành viên đã chọn`);
       } else if (pendingDeleteTarget === 'all') {
+        try { await fetch('/api/records', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mssv: '__all__' }) }); } catch (_) {}
         localStorage.removeItem(STORAGE_KEY);
         sessionRecords.clear();
         selectedMemberIds.clear();
         closeClearModal();
         updateDataCounters();
         renderDataTable('');
-        showToast("✓ Đã xóa toàn bộ dữ liệu thành viên trên máy");
+        showToast("✓ Đã xóa toàn bộ dữ liệu thành viên");
       }
     });
   }

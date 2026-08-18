@@ -1215,10 +1215,14 @@
   }
 
   if (executeDeleteBtn) {
-    executeDeleteBtn.addEventListener('click', () => {
+    executeDeleteBtn.addEventListener('click', async () => {
       if (!pendingDeleteTarget) return;
       const targetId = pendingDeleteTarget.id || pendingDeleteTarget.mssv;
       const targetName = pendingDeleteTarget.fullName || pendingDeleteTarget.mssv;
+      const targetMssv = pendingDeleteTarget.mssv;
+      // Xoá trên cloud
+      try { await fetch('/api/records', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mssv: targetMssv }) }); } catch (_) {}
+      // Xoá trên local
       const records = getRecords();
       const updated = records.filter(item => (item.id ? item.id !== targetId : item.mssv !== pendingDeleteTarget.mssv));
       saveRecords(updated);
@@ -1271,9 +1275,14 @@
   }
 
   if (executeClearBtn) {
-    executeClearBtn.addEventListener('click', () => {
+    executeClearBtn.addEventListener('click', async () => {
       if (pendingDeleteTarget === 'bulk') {
         const records = getRecords();
+        const toDelete = records.filter(item => selectedMemberIds.has(item.id || item.mssv));
+        // Xoá từng cái trên cloud
+        for (const r of toDelete) {
+          try { await fetch('/api/records', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mssv: r.mssv }) }); } catch (_) {}
+        }
         const updated = records.filter(item => !selectedMemberIds.has(item.id || item.mssv));
         const count = records.length - updated.length;
         saveRecords(updated);
@@ -1282,11 +1291,13 @@
         render(searchInput ? searchInput.value : '');
         showToast(`✓ Đã xóa ${count} thành viên đã chọn`);
       } else if (pendingDeleteTarget === 'all') {
+        // Xoá toàn bộ trên cloud
+        try { await fetch('/api/records', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mssv: '__all__' }) }); } catch (_) {}
         localStorage.removeItem(STORAGE_KEY);
         selectedMemberIds.clear();
         closeClearModal();
         render('');
-        showToast("✓ Đã xóa toàn bộ dữ liệu thành viên trên máy");
+        showToast("✓ Đã xóa toàn bộ dữ liệu thành viên");
       }
     });
   }
